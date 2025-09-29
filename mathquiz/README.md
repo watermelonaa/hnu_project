@@ -181,10 +181,6 @@ jar cfm mathquiz.jar MANIFEST.MF -C out/production/apersonalproject .
   - 实现用户认证和题目去重功能
   - 增加小学操作数至少为2，表达式答案不出现负数
 
-## 作者
 
-**赵文琪** - 项目开发者
-
----
 
 
