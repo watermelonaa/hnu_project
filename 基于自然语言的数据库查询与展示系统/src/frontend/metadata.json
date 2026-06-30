@@ -1,0 +1,5 @@
+{
+  "name": "Natural Language Database Query System",
+  "description": "A web application that allows users to query databases using natural language. It provides a chat-based interface, displays results in tables and charts, and manages conversation history.",
+  "requestFramePermissions": []
+}

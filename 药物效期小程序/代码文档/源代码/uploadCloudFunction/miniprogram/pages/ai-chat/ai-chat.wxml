@@ -1,0 +1,58 @@
+<view class="page">
+  <scroll-view class="chat" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="assistant-card">
+      <view class="assistant-head">
+        <view class="assistant-icon">
+          <image class="assistant-icon-img" src="/images/icons/ui/bot-white.svg" mode="aspectFit"></image>
+        </view>
+        <view class="assistant-copy">
+          <text class="assistant-title">药箱智能助手</text>
+          <text class="assistant-desc">{{tipsText}}</text>
+        </view>
+        <view class="clear-btn" bindtap="clearChat">
+          <text>清空</text>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view class="tool-row" scroll-x enhanced show-scrollbar="{{false}}">
+      <view wx:for="{{aiTools}}" wx:key="text" class="tool-chip" bindtap="onToolTap" data-text="{{item.text}}" data-prompt="{{item.prompt}}">
+        <text>{{item.text}}</text>
+      </view>
+    </scroll-view>
+
+    <scroll-view class="quick-row" scroll-x enhanced show-scrollbar="{{false}}">
+      <view wx:for="{{quickActions}}" wx:key="text" class="quick-chip" bindtap="onQuickActionTap" data-text="{{item.text}}" data-prompt="{{item.prompt}}">
+        <text>{{item.text}}</text>
+      </view>
+    </scroll-view>
+
+    <view class="message-list">
+      <view wx:for="{{messages}}" wx:key="index" class="msg {{item.role}}">
+        <view class="bubble">
+          <text>{{item.content}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{isLoading}}" class="msg ai">
+        <view class="bubble loading">
+          <text>AI 正在分析...</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="input-area">
+    <view class="input-wrapper">
+      <view class="input-icon">
+        <image class="input-icon-img" src="/images/icons/ui/question-blue.svg" mode="aspectFit"></image>
+      </view>
+      <input class="chat-input" placeholder="询问临期药品、保存建议等" placeholder-class="placeholder" bindinput="onInputChange" value="{{inputText}}" confirm-type="send" bindconfirm="sendMessage" disabled="{{isLoading}}" />
+      <view class="send-btn {{sendButtonClass}}" bindtap="sendMessage">
+        <text>发送</text>
+      </view>
+    </view>
+  </view>
+</view>

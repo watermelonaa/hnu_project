@@ -1,0 +1,114 @@
+<view class="page">
+  <scroll-view class="content" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="user-card" bindtap="editProfile">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="user-info">
+        <text class="eyebrow">我的药箱</text>
+        <text class="user-name">{{userInfo.nickName}}</text>
+        <text class="user-desc">{{userInfo.description}}</text>
+      </view>
+      <view class="edit-chip">
+        <text>编辑</text>
+      </view>
+    </view>
+
+    <view class="health-card">
+      <view class="health-top">
+        <view class="health-copy">
+          <text class="health-label">药箱健康度</text>
+          <text class="health-title">{{healthTitle}}</text>
+          <text class="health-desc">{{healthDesc}}</text>
+        </view>
+        <view class="score-ring">
+          <text class="score-value">{{healthScore}}</text>
+          <text class="score-unit">分</text>
+        </view>
+      </view>
+      <view class="risk-row">
+        <view class="risk-pill total">
+          <text class="risk-value">{{totalCount}}</text>
+          <text class="risk-label">总数</text>
+        </view>
+        <view class="risk-pill danger">
+          <text class="risk-value">{{expiredCount}}</text>
+          <text class="risk-label">已过期</text>
+        </view>
+        <view class="risk-pill warning">
+          <text class="risk-value">{{expiringCount}}</text>
+          <text class="risk-label">临期</text>
+        </view>
+        <view class="risk-pill ok">
+          <text class="risk-value">{{normalCount}}</text>
+          <text class="risk-label">正常</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="quick-section">
+      <view class="section-row">
+        <text class="section-title">常用操作</text>
+        <text class="section-note">{{lastSyncText}}</text>
+      </view>
+      <view class="quick-grid">
+        <view wx:for="{{quickActions}}" wx:key="title" class="quick-card" bindtap="onQuickActionTap" data-type="{{item.type}}" data-url="{{item.url}}" data-filter="{{item.filter}}">
+          <view class="quick-icon">
+            <image class="icon-img" src="{{item.iconSrc}}" mode="aspectFit"></image>
+          </view>
+          <view class="quick-copy">
+            <text class="quick-title">{{item.title}}</text>
+            <text class="quick-desc">{{item.desc}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:for="{{menuGroups}}" wx:key="title" class="menu-section">
+      <text class="section-title menu-heading">{{item.title}}</text>
+      <view class="menu-group">
+        <view wx:for="{{item.items}}" wx:for-item="menu" wx:key="name" class="menu-item" bindtap="onMenuItemTap" data-type="{{menu.type}}" data-url="{{menu.url}}" data-filter="{{menu.filter}}" data-name="{{menu.name}}">
+          <view class="menu-icon">
+            <image class="icon-img" src="{{menu.iconSrc}}" mode="aspectFit"></image>
+          </view>
+          <view class="menu-main">
+            <text class="menu-name">{{menu.name}}</text>
+            <text class="menu-desc">{{menu.desc}}</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="editor-mask {{profileEditorClass}}" bindtap="closeProfileEditor">
+    <view class="editor-sheet" catchtap="noop">
+      <view class="editor-head">
+        <text class="editor-title">编辑资料</text>
+        <text class="editor-desc">资料将保存到云数据库。</text>
+      </view>
+
+      <view class="avatar-editor" bindtap="chooseProfileAvatar">
+        <image class="editor-avatar" src="{{profileDraft.avatarUrl}}" mode="aspectFill"></image>
+        <view class="avatar-copy">
+          <text class="avatar-title">更换头像</text>
+          <text class="avatar-desc">支持拍照或从相册选择</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+
+      <view class="editor-field">
+        <text class="field-label">昵称</text>
+        <input class="field-input" value="{{profileDraft.nickName}}" bindinput="onProfileNameInput" maxlength="24" placeholder="请输入昵称" placeholder-class="placeholder" />
+      </view>
+
+      <view class="editor-field">
+        <text class="field-label">简介</text>
+        <textarea class="field-textarea" value="{{profileDraft.description}}" bindinput="onProfileDescriptionInput" maxlength="60" placeholder="例如：药品效期云端管理已开启" placeholder-class="placeholder" />
+      </view>
+
+      <view class="editor-actions">
+        <button class="editor-btn ghost" bindtap="closeProfileEditor">取消</button>
+        <button class="editor-btn main" loading="{{isProfileSaving}}" disabled="{{isProfileSaving}}" bindtap="saveProfile">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

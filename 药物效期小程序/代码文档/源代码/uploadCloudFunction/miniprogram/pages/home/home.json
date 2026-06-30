@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "药物效期管家",
+  "navigationBarBackgroundColor": "#f6f8fb",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#f6f8fb",
+  "usingComponents": {}
+}

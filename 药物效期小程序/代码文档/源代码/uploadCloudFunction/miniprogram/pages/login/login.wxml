@@ -1,0 +1,62 @@
+﻿<view class="container">
+  <view class="content">
+    <view class="logo">
+      <view class="logo-icon">
+        <image class="logo-icon-img" src="../../images/logo.jpg" mode="aspectFill"></image>
+      </view>
+      <text class="title">药物效期管家</text>
+      <text class="subtitle">智能管理 · 用药安心</text>
+    </view>
+
+    <view class="auth-buttons">
+      <button class="wx-login-btn" bindtap="handleWechatLogin">
+        <text>微信授权登录</text>
+      </button>
+    </view>
+
+    <view class="agreement">
+      <text>登录前请阅读并同意</text>
+      <text class="link" bindtap="openUserAgreement">《用户协议》</text>
+      <text>和</text>
+      <text class="link" bindtap="openPrivacyPolicy">《隐私政策》</text>
+    </view>
+  </view>
+
+  <view class="privacy-modal {{privacyModalClass}}" bindtap="onModalTap" data-type="mask">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-icon">
+        <text class="modal-symbol">✓</text>
+      </view>
+      <text class="modal-title">登录授权确认</text>
+      <view class="modal-desc">
+        <text>我们将通过微信登录确认你的身份，并为你创建或读取药箱档案。</text>
+        <text>昵称、头像可在个人中心编辑；药品名称、数量、效期、图片或语音附件仅用于药箱管理、AI 识别和到期提醒。</text>
+        <text>点击“同意并登录”即表示你已阅读并同意《用户协议》和《隐私政策》。</text>
+      </view>
+      <view class="modal-buttons">
+        <button class="btn-disagree" bindtap="disagreePrivacy">暂不授权</button>
+        <button class="btn-agree" bindtap="agreePrivacy">同意并登录</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="agreement-modal {{agreementModalClass}}" bindtap="onAgreementModalTap" data-type="mask">
+    <view class="agreement-content" catchtap="noop">
+      <text class="agreement-title">用户协议</text>
+      <scroll-view class="agreement-scroll" scroll-y enhanced>
+        <text class="agreement-section-title">服务说明</text>
+        <text class="agreement-section-text">药物效期管家用于帮助家庭用户记录药品库存、效期状态和提醒信息。应用提供的 AI 识别和问答结果仅作为信息整理辅助，不替代医生、药师或药品说明书建议。</text>
+
+        <text class="agreement-section-title">账号与数据</text>
+        <text class="agreement-section-text">你可以使用微信授权登录。我们会在云数据库中保存与你账号关联的药品记录、提醒设置和必要的附件信息，以便跨设备同步和恢复。</text>
+
+        <text class="agreement-section-title">使用责任</text>
+        <text class="agreement-section-text">请确保录入的药品名称、数量、开封状态和到期日期准确。涉及用药剂量、禁忌、处方药或异常身体反应时，请优先咨询专业医护人员。</text>
+
+        <text class="agreement-section-title">协议更新</text>
+        <text class="agreement-section-text">后续如服务范围、数据处理方式或重要规则发生变化，我们会通过页面提示、弹窗或站内消息告知你。</text>
+      </scroll-view>
+      <button class="agreement-close" bindtap="closeUserAgreement">我知道了</button>
+    </view>
+  </view>
+</view>

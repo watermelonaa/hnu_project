@@ -1,0 +1,91 @@
+<!-- pages/about/about.wxml -->
+<view class="container">
+  <view class="screen">
+    <!-- 主要内容区域 -->
+    <scroll-view class="content" scroll-y enhanced show-scrollbar="{{true}}">
+      <!-- Logo和名称 -->
+      <view class="logo-section">
+        <view class="logo-icon">
+          <image class="logo-icon-img" src="../../images/logo.jpg" mode="aspectFill"></image>
+        </view>
+        <text class="app-name">{{appName}}</text>
+        <text class="app-version">{{version}}</text>
+      </view>
+
+      <!-- 应用描述 -->
+      <view class="card">
+        <text class="card-title">应用简介</text>
+        <text class="card-desc">{{description}}</text>
+      </view>
+
+      <!-- 功能介绍 -->
+      <view class="card">
+        <text class="card-title">功能介绍</text>
+        <view class="features">
+          <view wx:for="{{features}}" wx:key="name" class="feature-item">
+            <view class="feature-icon">
+              <image class="feature-icon-img" src="{{item.iconSrc}}" mode="aspectFit"></image>
+            </view>
+            <view class="feature-info">
+              <text class="feature-name">{{item.name}}</text>
+              <text class="feature-desc">{{item.desc}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 联系方式 -->
+      <view class="card">
+        <text class="card-title">联系我们</text>
+        
+        <view class="contact-item" bindtap="copyText" data-text="{{contactInfo.email}}">
+          <view class="contact-left">
+            <view class="contact-icon">
+              <image class="contact-icon-img" src="/images/icons/ui/mail-blue.svg" mode="aspectFit"></image>
+            </view>
+            <text>电子邮箱</text>
+          </view>
+          <view class="contact-right">
+            <text>{{contactInfo.email}}</text>
+            <text class="copy-text">复制</text>
+          </view>
+        </view>
+
+        <view class="contact-item" bindtap="copyText" data-text="{{contactInfo.wechat}}">
+          <view class="contact-left">
+            <view class="contact-icon">
+              <image class="contact-icon-img" src="/images/icons/ui/chat-blue.svg" mode="aspectFit"></image>
+            </view>
+            <text>微信公众号</text>
+          </view>
+          <view class="contact-right">
+            <text>{{contactInfo.wechat}}</text>
+            <text class="copy-text">复制</text>
+          </view>
+        </view>
+
+        <view class="contact-item" bindtap="makePhoneCall" data-phone="{{contactInfo.phone}}">
+          <view class="contact-left">
+            <view class="contact-icon">
+              <image class="contact-icon-img" src="/images/icons/ui/phone-blue.svg" mode="aspectFit"></image>
+            </view>
+            <text>客服热线</text>
+          </view>
+          <view class="contact-right">
+            <text>{{contactInfo.phone}}</text>
+            <text class="copy-text">拨打</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 版权信息 -->
+      <view class="copyright">
+        <text>© 2024 药物效期管家</text>
+        <text>All Rights Reserved</text>
+      </view>
+    </scroll-view>
+
+    <!-- 底部指示条 -->
+    <view class="home-indicator"></view>
+  </view>
+</view>

@@ -1,0 +1,48 @@
+<view class="container">
+  <view class="screen">
+    <scroll-view class="content" scroll-y enhanced show-scrollbar="{{true}}">
+      <view class="toolbar" wx:if="{{hasMessages}}">
+        <text class="toolbar-title">效期提醒</text>
+        <view class="clear-btn" bindtap="clearAllMessages">
+          <text>清空</text>
+        </view>
+      </view>
+
+      <view wx:if="{{isLoading}}" class="loading-state">
+        <text>正在加载提醒...</text>
+      </view>
+
+      <view class="unread-header" wx:if="{{hasUnread}}">
+        <text class="unread-text">您有 {{unreadCount}} 条未读消息</text>
+        <text class="mark-all" bindtap="markAsRead">全部已读</text>
+      </view>
+
+      <view wx:if="{{hasMessages}}">
+        <view wx:for="{{messages}}" wx:key="id" class="message-item {{item.readClass}}" bindtap="onMessageTap" data-id="{{item.id}}">
+          <view class="msg-icon {{item.typeClass}}">
+            <image class="msg-icon-img" src="{{item.iconSrc}}" mode="aspectFit"></image>
+          </view>
+
+          <view class="msg-content">
+            <view class="msg-header">
+              <text class="msg-title">{{item.title}}</text>
+              <text class="msg-time">{{item.time}}</text>
+            </view>
+            <text class="msg-desc">{{item.content}}</text>
+          </view>
+
+          <view class="delete-btn" catchtap="deleteMessage" data-id="{{item.id}}">
+            <image class="delete-icon" src="/images/icons/ui/x-red.svg" mode="aspectFit"></image>
+          </view>
+        </view>
+      </view>
+
+      <view wx:elif="{{!isLoading}}" class="empty-state">
+        <text class="empty-title">暂无消息提醒</text>
+        <text class="empty-desc">{{emptyDesc}}</text>
+      </view>
+    </scroll-view>
+
+    <view class="home-indicator"></view>
+  </view>
+</view>

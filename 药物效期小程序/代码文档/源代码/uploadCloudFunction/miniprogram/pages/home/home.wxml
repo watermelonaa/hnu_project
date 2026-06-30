@@ -1,0 +1,84 @@
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+
+  <view class="topbar">
+    <view class="title-block">
+      <text class="eyebrow">家庭药箱</text>
+      <text class="page-title">药物效期管家</text>
+    </view>
+  </view>
+
+  <scroll-view class="content" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="hero-card">
+      <view class="hero-copy">
+        <text class="hero-title">{{wasteText}}</text>
+        <text class="hero-subtitle">{{priorityText}}</text>
+      </view>
+      <view class="hero-mark">
+        <image class="hero-icon" src="../../images/logo.jpg" mode="aspectFill"></image>
+      </view>
+    </view>
+
+    <view class="stat-row">
+      <view class="stat-card danger" bindtap="goToFoodList" data-filter="expired">
+        <text class="stat-value">{{expiredCount}}</text>
+        <text class="stat-label">已过期</text>
+      </view>
+      <view class="stat-card warning" bindtap="goToFoodList" data-filter="expiring">
+        <text class="stat-value">{{expiringCount}}</text>
+        <text class="stat-label">临期</text>
+      </view>
+      <view class="stat-card success" bindtap="goToFoodList" data-filter="normal">
+        <text class="stat-value">{{normalCount}}</text>
+        <text class="stat-label">正常</text>
+      </view>
+    </view>
+
+    <view class="section-head">
+      <text class="section-title">快速录入</text>
+      <text class="section-note">优先支持拍照与语音识别</text>
+    </view>
+
+    <view class="action-row">
+      <view class="action-card featured" bindtap="goToCapture">
+        <view class="action-icon action-camera">
+          <image class="action-icon-img" src="/images/icons/ui/camera-white.svg" mode="aspectFit"></image>
+        </view>
+        <text class="action-title">拍照录入</text>
+      </view>
+      <view class="action-card featured" bindtap="goToVoice">
+        <view class="action-icon action-voice">
+          <image class="action-icon-img" src="/images/icons/ui/mic-white.svg" mode="aspectFit"></image>
+        </view>
+        <text class="action-title">语音录入</text>
+      </view>
+    </view>
+
+    <button class="manual-button" bindtap="goToManual">
+      <image class="button-plus" src="/images/icons/ui/plus-white.svg" mode="aspectFit"></image>
+      <text>手动录入</text>
+    </button>
+
+    <view class="focus-card">
+      <view class="focus-head">
+        <text class="section-title">今日关注</text>
+        <text class="view-more" bindtap="viewAllReminders">查看全部</text>
+      </view>
+
+      <view wx:if="{{isReminderEmpty}}" class="empty-state">
+        <text class="empty-title">暂无过期或临期药品</text>
+        <text class="empty-desc">药箱状态良好，建议定期检查效期。</text>
+      </view>
+
+      <view wx:else class="reminder-list">
+        <view wx:for="{{reminderList}}" wx:key="id" class="reminder-item" bindtap="onReminderTap" data-id="{{item.id}}">
+          <view class="reminder-main">
+            <text class="reminder-name">{{item.name}}</text>
+            <text class="reminder-meta">{{item.openState}}</text>
+          </view>
+          <text class="status-pill {{item.tagClass}}">{{item.tagText}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

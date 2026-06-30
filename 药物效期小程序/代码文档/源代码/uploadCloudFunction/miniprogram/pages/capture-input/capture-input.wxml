@@ -1,0 +1,115 @@
+<view class="container">
+  <view class="screen">
+    <view class="camera-preview">
+      <camera
+        wx:if="{{!selectedImage}}"
+        class="camera-live"
+        mode="normal"
+        device-position="back"
+        flash="off"
+        binderror="onCameraError"
+      ></camera>
+      <image wx:else class="camera-bg" src="{{selectedImage}}" mode="aspectFill"></image>
+
+      <view wx:if="{{!selectedImage}}" class="focus-frame">
+        <view class="corner corner-left-top"></view>
+        <view class="corner corner-right-top"></view>
+        <view class="corner corner-left-bottom"></view>
+        <view class="corner corner-right-bottom"></view>
+      </view>
+
+      <view wx:if="{{selectedImage}}" class="result-panel">
+        <text class="result-title">AI 识别结果（{{detectedItems.length}} 项）</text>
+        <view wx:for="{{detectedItems}}" wx:key="index" class="result-item">
+          <text>{{item.displayName}}</text>
+          <text>可信度：{{item.confidenceText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="top-bar">
+      <view class="top-btn" bindtap="goBack"><text>返回</text></view>
+      <text class="top-title">拍照录入</text>
+      <view class="top-btn" bindtap="retakePhoto"><text>重拍</text></view>
+    </view>
+
+    <view class="camera-tip">
+      <text>{{cameraTip}}</text>
+    </view>
+
+    <view class="footer">
+      <view class="footer-center">
+        <view class="shutter-btn {{recognizingClass}}" bindtap="takePhoto"></view>
+        <text class="shutter-text">{{shutterText}}</text>
+      </view>
+
+      <view class="album-btn" bindtap="chooseAlbumImage">
+        <image class="album-icon" src="/images/icons/ui/camera-blue.svg" mode="aspectFit"></image>
+        <text>相册</text>
+      </view>
+    </view>
+
+    <view class="entry-overlay {{entrySheetClass}}" bindtap="closeEntrySheet">
+      <view class="entry-sheet" catchtap="noop">
+        <view class="sheet-header">
+          <view class="sheet-handle"></view>
+          <text class="sheet-title">确认药品信息</text>
+          <text class="sheet-desc">保存前请核对 AI 识别结果。</text>
+        </view>
+
+        <scroll-view class="sheet-body" scroll-y enhanced>
+          <view wx:for="{{detectedItems}}" wx:key="index" class="drug-item">
+            <view class="item-tag">
+              <text>第 {{index + 1}} 项</text>
+              <text class="confidence {{item.confidenceClass}}">{{item.confidenceText}}</text>
+            </view>
+
+            <view wx:if="{{item.warnings.length}}" class="warning-box">
+              <text wx:for="{{item.warnings}}" wx:for-item="warning" wx:key="*this">! {{warning}}</text>
+            </view>
+
+            <view class="form-field">
+              <text class="field-label">药品名称</text>
+              <input class="field-input" value="{{item.name}}" bindinput="onNameInput" data-index="{{index}}" placeholder="请输入药品名称" />
+            </view>
+            <view class="form-field">
+              <text class="field-label">数量</text>
+              <input class="field-input" value="{{item.qty}}" bindinput="onQtyInput" data-index="{{index}}" placeholder="例如：1盒" />
+            </view>
+            <view class="form-field">
+              <text class="field-label">分类</text>
+              <picker mode="selector" range="{{categoryOptions}}" range-key="name" value="{{item.categoryIndex}}" bindchange="onCategoryChange" data-index="{{index}}">
+                <view class="picker-view"><text>{{item.categoryText}}</text><text class="picker-arrow">›</text></view>
+              </picker>
+            </view>
+            <view class="form-field">
+              <text class="field-label">位置</text>
+              <picker mode="selector" range="{{locationOptions}}" value="{{item.locationIndex}}" bindchange="onLocationChange" data-index="{{index}}">
+                <view class="picker-view"><text>{{item.locationText}}</text><text class="picker-arrow">›</text></view>
+              </picker>
+            </view>
+            <view class="form-field">
+              <text class="field-label">开封状态</text>
+              <picker mode="selector" range="{{openStateOptions}}" value="{{item.openStateIndex}}" bindchange="onOpenStateChange" data-index="{{index}}">
+                <view class="picker-view"><text>{{item.openStateText}}</text><text class="picker-arrow">›</text></view>
+              </picker>
+            </view>
+            <view class="form-field">
+              <text class="field-label">到期日期</text>
+              <picker mode="date" value="{{item.date}}" bindchange="onDateChange" data-index="{{index}}">
+                <view class="picker-view"><text>{{item.dateText}}</text><text class="picker-arrow">›</text></view>
+              </picker>
+            </view>
+
+            <button class="remove-btn" bindtap="removeItem" data-index="{{index}}">移除</button>
+          </view>
+        </scroll-view>
+
+        <view class="sheet-footer">
+          <button class="cancel-btn" bindtap="addEmptyItem">添加一项</button>
+          <button class="save-btn" loading="{{isSaving}}" disabled="{{isSaving}}" bindtap="saveAllDrugs">保存</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

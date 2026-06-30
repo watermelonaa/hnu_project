@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>药物效期管家 - 首页</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Alibaba PuHuiTi", "PingFang SC", "Helvetica Neue", sans-serif;
+      background: linear-gradient(180deg, #eaf1ff, #f4f6fb);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      color: #1f2937;
+    }
+    .phone {
+      width: 393px;
+      height: 852px;
+      border-radius: 52px;
+      padding: 12px;
+      background: linear-gradient(180deg, #22252b 0%, #13161b 100%);
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35);
+      border: 1px solid #0f1115;
+      overflow: hidden;
+    }
+    .screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 40px;
+      background: #f5f8fd;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .screen::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 116px;
+      height: 28px;
+      border-radius: 18px;
+      background: #0f1115;
+      z-index: 3;
+    }
+    .status {
+      height: 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 14px;
+      font-weight: 600;
+      background: #f5f8fd;
+    }
+    .status i { margin-left: 8px; }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 18px 12px;
+    }
+    .nav h2 { font-size: 24px; }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .main {
+      flex: 1;
+      overflow: auto;
+      padding: 0 16px 132px;
+    }
+    .banner {
+      background: linear-gradient(135deg, #2f80ed, #56ccf2);
+      border-radius: 22px;
+      color: #fff;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .banner p { font-size: 13px; opacity: 0.9; margin-top: 6px; }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .stat {
+      background: #fff;
+      border-radius: 16px;
+      padding: 12px 8px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+      text-decoration: none;
+      color: inherit;
+    }
+    .stat h3 { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+    .stat p { font-size: 12px; color: #64748b; }
+    .danger h3 { color: #ef4444; }
+    .warn h3 { color: #f59e0b; }
+    .safe h3 { color: #10b981; }
+    .quick {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .quick .item {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 126px;
+    }
+    .quick .item i {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 22px;
+    }
+    .camera i { background: #0a84ff; }
+    .voice i { background: #5e5ce6; }
+    .quick .item strong { font-size: 15px; }
+    .manual-entry {
+      width: 100%;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      border: 1px solid #d6e3f7;
+      background: #f7fbff;
+      color: #1f2937;
+      border-radius: 999px;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+      position: relative;
+      z-index: 1;
+    }
+    .manual-entry i { color: #0a84ff; }
+    .panel {
+      background: #fff;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+      margin-bottom: 12px;
+    }
+    .panel .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .link-more { color: #2563eb; font-size: 12px; text-decoration: none; }
+    .food {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 14px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .food:last-child { border-bottom: none; }
+    .tag {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: #fff;
+    }
+    .t-red { background: #ef4444; }
+    .t-amber { background: #f59e0b; }
+    .t-green { background: #10b981; }
+    .tabbar {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 34px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 10px 0 8px;
+      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
+      backdrop-filter: blur(8px);
+    }
+    .tab {
+      text-align: center;
+      font-size: 11px;
+      color: #64748b;
+      text-decoration: none;
+    }
+    .tab i { display: block; font-size: 18px; margin-bottom: 4px; }
+    .tab.active { color: #2563eb; font-weight: 600; }
+    .home-indicator {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 10px;
+      width: 128px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(17, 24, 39, 0.75);
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <div class="status">
+        <span>9:41</span>
+        <div>
+          <i class="fa-solid fa-signal"></i>
+          <i class="fa-solid fa-wifi"></i>
+          <i class="fa-solid fa-battery-three-quarters"></i>
+        </div>
+      </div>
+      <div class="nav">
+        <h2>首页</h2>
+        <img class="avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="avatar" onclick="window.location.href='profile.html'" />
+      </div>
+      <div class="main">
+        <section class="banner">
+          <strong id="wasteText">本周可规避 0 次过期用药风险</strong>
+          <p id="priorityText">优先处理 0 件临期药物，AI 已生成用药管理建议。</p>
+        </section>
+
+        <section class="stat-grid">
+          <a class="stat danger" href="food-list.html?filter=expired"><h3 id="expiredCount">0</h3><p>已过期</p></a>
+          <a class="stat warn" href="food-list.html?filter=expiring"><h3 id="expiringCount">0</h3><p>3天内到期</p></a>
+          <a class="stat safe" href="food-list.html?filter=normal"><h3 id="normalCount">0</h3><p>药箱正常</p></a>
+        </section>
+
+        <section class="quick">
+          <div class="item camera" onclick="window.location.href='capture-input.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-camera"></i>
+            <strong>拍照录入</strong>
+          </div>
+          <div class="item voice" onclick="window.location.href='voice-input.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-microphone"></i>
+            <strong>语音录入</strong>
+          </div>
+        </section>
+        <button class="manual-entry" onclick="window.location.href='manual-input.html'">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>手动录入</span>
+        </button>
+
+        <section class="panel">
+          <div class="title"><span>今日重点提醒</span><a class="link-more" href="food-list.html">查看全部</a></div>
+          <div id="reminderList"></div>
+        </section>
+      </div>
+      <div class="tabbar">
+        <a class="tab active" href="home.html"><i class="fa-solid fa-house"></i>首页</a>
+        <a class="tab" href="food-list.html"><i class="fa-solid fa-box-open"></i>药物</a>
+        <a class="tab" href="ai-chat.html"><i class="fa-solid fa-robot"></i>AI</a>
+        <a class="tab" href="profile.html"><i class="fa-regular fa-user"></i>我的</a>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+  <script>
+    // 药物数据（已全部改为药物相关）
+    const defaultDrugs = [
+      { id: 1, name: "布洛芬", qty: "1盒", location: "药箱", openState: "已开封", status: "expired", days: -1 },
+      { id: 2, name: "维生素C", qty: "1瓶", location: "药箱", openState: "已开封", status: "expiring", days: 2 },
+      { id: 3, name: "感冒灵颗粒", qty: "6袋", location: "药箱", openState: "未开封", status: "normal", days: 8 },
+      { id: 4, name: "阿莫西林", qty: "1盒", location: "药箱", openState: "未开封", status: "expiring", days: 1 },
+      { id: 5, name: "蒙脱石散", qty: "2盒", location: "药箱", openState: "未开封", status: "normal", days: 9 },
+      { id: 6, name: "碘伏", qty: "1瓶", location: "药箱", openState: "已开封", status: "expired", days: -2 },
+      { id: 7, name: "创可贴", qty: "1盒", location: "药箱", openState: "已开封", status: "expiring", days: 1 },
+      { id: 8, name: "叶酸", qty: "1瓶", location: "药箱", openState: "未开封", status: "normal", days: 42 },
+      { id: 9, name: "氯雷他定", qty: "1盒", location: "药箱", openState: "未开封", status: "normal", days: 10 },
+      { id: 10, name: "对乙酰氨基酚", qty: "1盒", location: "药箱", openState: "未开封", status: "normal", days: 7 },
+      { id: 11, name: "复合维生素", qty: "1瓶", location: "药箱", openState: "已开封", status: "normal", days: 15 },
+      { id: 12, name: "西瓜霜含片", qty: "1盒", location: "药箱", openState: "未开封", status: "expiring", days: 2 },
+      { id: 13, name: "藿香正气水", qty: "1盒", location: "药箱", openState: "未开封", status: "expiring", days: 3 },
+      { id: 14, name: "止咳糖浆", qty: "1瓶", location: "药箱", openState: "已开封", status: "expired", days: -3 },
+      { id: 15, name: "红霉素软膏", qty: "1支", location: "药箱", openState: "已开封", status: "expired", days: -4 }
+    ];
+
+    function getDrugs() {
+      const raw = localStorage.getItem("foodsData");
+      if (raw) return JSON.parse(raw);
+      localStorage.setItem("foodsData", JSON.stringify(defaultDrugs));
+      return defaultDrugs;
+    }
+
+    const drugs = getDrugs();
+    const expired = drugs.filter(function (f) { return f.status === "expired"; }).length;
+    const expiring = drugs.filter(function (f) { return f.status === "expiring"; }).length;
+    const normal = drugs.filter(function (f) { return f.status === "normal"; }).length;
+
+    document.getElementById("expiredCount").textContent = expired;
+    document.getElementById("expiringCount").textContent = expiring;
+    document.getElementById("normalCount").textContent = normal;
+    document.getElementById("wasteText").textContent = "本周可规避 " + (expired + expiring) + " 次过期用药风险";
+    document.getElementById("priorityText").textContent = "优先处理 " + expiring + " 件临期药物，AI 已生成用药管理建议。";
+
+    function urgencyValue(item) {
+      if (item.status === "expired") return -100 + item.days;
+      if (item.status === "expiring") return item.days;
+      return 999;
+    }
+
+    function reminderTag(item) {
+      if (item.status === "expired") return '<span class="tag t-red">已过期' + Math.abs(item.days) + '天</span>';
+      if (item.status === "expiring") return '<span class="tag t-amber">剩余' + item.days + '天</span>';
+      return '<span class="tag t-green">剩余' + item.days + '天</span>';
+    }
+
+    const reminderDrugs = drugs
+      .filter(function (f) { return f.status === "expired" || f.status === "expiring"; })
+      .sort(function (a, b) { return urgencyValue(a) - urgencyValue(b); })
+      .slice(0, 3);
+
+    const reminderList = document.getElementById("reminderList");
+    if (reminderDrugs.length === 0) {
+      reminderList.innerHTML = '<div class="food"><span>暂无临期或过期提醒</span><span class="tag t-green">药箱健康</span></div>';
+    } else {
+      reminderList.innerHTML = reminderDrugs.map(function (item) {
+        return '<a class="food" href="food-list.html?focus=' + encodeURIComponent(item.id) + '">'
+          + '<span>' + item.name + "（" + item.openState + '）</span>'
+          + reminderTag(item)
+          + "</a>";
+      }).join("");
+    }
+  </script>
+</body>
+</html>

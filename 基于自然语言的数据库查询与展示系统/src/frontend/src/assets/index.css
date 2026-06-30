@@ -1,0 +1,855 @@
+/* index.css */
+
+/* ===== 主题样式变量 ===== */
+:root {
+  /* 浅色主题 */
+  --light-bg: #F5F7FA;
+  --light-card: #FFFFFF;
+  --light-text: #1D2129;
+  --light-primary: #165DFF;
+  
+  /* 深色主题 */
+  --dark-bg: #1F2937;
+  --dark-card: #374151;
+  --dark-text: #F9FAFB;
+  --dark-primary: #3B82F6;
+  
+  /* 蓝色主题 */
+  --blue-bg: #EFF6FF;
+  --blue-card: #BFDBFE;
+  --blue-text: #1E3A8A;
+  --blue-primary: #2563EB;
+  
+  /* 绿色主题 */
+  --green-bg: #F0FDF4;
+  --green-card: #A7F3D0;
+  --green-text: #14532D;
+  --green-primary: #10B981;
+  
+  /* 紫色主题 */
+  --purple-bg: #FAF5FF;
+  --purple-card: #E9D5FF;
+  --purple-text: #581C87;
+  --purple-primary: #8B5CF6;
+  
+  /* 大字主题（使用浅色配色） */
+  --large-bg: #F5F7FA;
+  --large-card: #FFFFFF;
+  --large-text: #1D2129;
+  --large-primary: #165DFF;
+  
+  /* 当前主题变量（默认浅色） */
+  --theme-bg: var(--light-bg);
+  --theme-card: var(--light-card);
+  --theme-text: var(--light-text);
+  --theme-primary: var(--light-primary);
+  
+  /* 字体大小变量 */
+  --font-size-base: 1rem;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+}
+
+/* 主题类 */
+.theme-light {
+  --theme-bg: var(--light-bg);
+  --theme-card: var(--light-card);
+  --theme-text: var(--light-text);
+  --theme-primary: var(--light-primary);
+}
+
+.theme-dark {
+  --theme-bg: var(--dark-bg);
+  --theme-card: var(--dark-card);
+  --theme-text: var(--dark-text);
+  --theme-primary: var(--dark-primary);
+}
+
+.theme-blue {
+  --theme-bg: var(--blue-bg) !important;
+  --theme-card: var(--blue-card) !important;
+  --theme-text: var(--blue-text) !important;
+  --theme-primary: var(--blue-primary) !important;
+}
+
+.theme-blue body,
+.theme-blue .bg-neutral,
+.theme-blue .bg-gray-50 {
+  background-color: var(--blue-bg) !important;
+}
+
+.theme-blue .bg-white {
+  background-color: var(--blue-card) !important;
+}
+
+.theme-green {
+  --theme-bg: var(--green-bg) !important;
+  --theme-card: var(--green-card) !important;
+  --theme-text: var(--green-text) !important;
+  --theme-primary: var(--green-primary) !important;
+}
+
+.theme-green body,
+.theme-green .bg-neutral,
+.theme-green .bg-gray-50 {
+  background-color: var(--green-bg) !important;
+}
+
+.theme-green .bg-white {
+  background-color: var(--green-card) !important;
+}
+
+.theme-purple {
+  --theme-bg: var(--purple-bg) !important;
+  --theme-card: var(--purple-card) !important;
+  --theme-text: var(--purple-text) !important;
+  --theme-primary: var(--purple-primary) !important;
+}
+
+.theme-purple body,
+.theme-purple .bg-neutral,
+.theme-purple .bg-gray-50 {
+  background-color: var(--purple-bg) !important;
+}
+
+.theme-purple .bg-white {
+  background-color: var(--purple-card) !important;
+}
+
+.theme-large {
+  --theme-bg: var(--large-bg);
+  --theme-card: var(--large-card);
+  --theme-text: var(--large-text);
+  --theme-primary: var(--large-primary);
+}
+
+/* 应用主题到html和body */
+html {
+  background-color: var(--theme-bg);
+  transition: background-color 0.3s ease;
+}
+
+body {
+  background-color: var(--theme-bg) !important;
+  color: var(--theme-text) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 确保主题变量应用到所有元素 */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ===== 大字主题字体样式 ===== */
+.theme-large-font {
+  font-size: 1.25rem !important; /* 基础字体增大 */
+}
+
+.theme-large-font .text-sm {
+  font-size: 1rem !important;
+}
+
+.theme-large-font .text-base {
+  font-size: 1.25rem !important;
+}
+
+.theme-large-font .text-lg {
+  font-size: 1.5rem !important;
+}
+
+.theme-large-font .text-xl {
+  font-size: 1.75rem !important;
+}
+
+.theme-large-font .text-2xl {
+  font-size: 2rem !important;
+}
+
+.theme-large-font h1 {
+  font-size: 2.5rem !important;
+}
+
+.theme-large-font h2 {
+  font-size: 2rem !important;
+}
+
+.theme-large-font h3 {
+  font-size: 1.75rem !important;
+}
+
+.theme-large-font button {
+  font-size: 1.125rem !important;
+  padding: 0.75rem 1.5rem !important;
+}
+
+.theme-large-font input,
+.theme-large-font textarea,
+.theme-large-font select {
+  font-size: 1.125rem !important;
+  padding: 0.75rem 1rem !important;
+}
+
+/* ===== 全局主题样式类（替代硬编码的Tailwind类） ===== */
+/* 背景色 */
+.theme-bg {
+  background-color: var(--theme-bg) !important;
+}
+
+.theme-card {
+  background-color: var(--theme-card) !important;
+}
+
+/* 文字颜色 */
+.theme-text {
+  color: var(--theme-text) !important;
+}
+
+.theme-text-secondary {
+  color: var(--theme-text);
+  opacity: 0.7;
+}
+
+/* 主色调 */
+.theme-primary {
+  color: var(--theme-primary) !important;
+}
+
+.theme-primary-bg {
+  background-color: var(--theme-primary) !important;
+}
+
+.theme-primary-border {
+  border-color: var(--theme-primary) !important;
+}
+
+/* 边框颜色 */
+.theme-border {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.theme-dark .theme-border {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 阴影 */
+.theme-shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.theme-dark .theme-shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 输入框样式 */
+.theme-input {
+  background-color: var(--theme-card) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.theme-input:focus {
+  border-color: var(--theme-primary) !important;
+  background-color: var(--theme-card) !important;
+}
+
+.theme-input::placeholder {
+  color: var(--theme-text);
+  opacity: 0.5;
+}
+
+/* 卡片样式 */
+.theme-card-container {
+  background-color: var(--theme-card) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* 悬停效果 */
+.theme-hover:hover {
+  background-color: var(--theme-bg) !important;
+}
+
+.theme-dark .theme-hover:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 图表容器样式 */
+.chart-container {
+  position: relative;
+  height: 256px; /* h-64 */
+  width: 100%;
+}
+
+/* 渐变背景动画 */
+.animated-gradient {
+  background: linear-gradient(-45deg, #eef2ff, #f3e8ff, #dbeafe, #e0f2fe);
+  background-size: 400% 400%;
+  animation: gradient-animation 15s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 加载动画 */
+.dot-flashing {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, #3b82f6);
+  animation: dot-flashing 1s infinite linear alternate;
+  animation-delay: 0.5s;
+  margin: 0 auto;
+}
+
+.dot-flashing::before,
+.dot-flashing::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
+.dot-flashing::before {
+  left: -15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--color-primary, #165dff);
+  color: var(--color-primary, #165dff);
+  animation: dot-flashing 1s infinite alternate;
+  animation-delay: 0s;
+}
+
+.dot-flashing::after {
+  left: 15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--color-primary, #165dff);
+  color: var(--color-primary, #165dff);
+  animation: dot-flashing 1s infinite alternate;
+  animation-delay: 1s;
+}
+
+@keyframes dot-flashing {
+  0% {
+    background-color: var(--color-primary, #165dff);
+  }
+  50%,
+  100% {
+    background-color: rgba(22, 93, 255, 0.2);
+  }
+}
+
+/* 响应式字体大小 */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .no-print {
+    display: none;
+  }
+}
+
+/* ==================== 响应式侧边栏和页面布局 ==================== */
+
+/* 通用滚动容器 */
+.scrollable-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 小屏幕（小于1024px）时自动隐藏侧边栏 */
+@media (max-width: 1023px) {
+  /* 隐藏桌面端侧边栏（移动端侧边栏通过 v-if 和 v-show 控制，不受此规则影响） */
+  aside:not([class*="z-\[60\]"]) {
+    display: none !important;
+  }
+  
+  /* 确保移动端侧边栏显示（fixed定位的侧边栏，通过v-show控制显示/隐藏） */
+  aside[class*="z-\[60\]"] {
+    display: flex !important;
+  }
+  
+  /* 移动端侧边栏隐藏时 */
+  aside[class*="z-\[60\]"][style*="display: none"] {
+    display: none !important;
+  }
+  
+  /* 确保移动端侧边栏header样式与TopHeader一致 */
+  aside[class*="z-\[60\]"] .p-4.border-b {
+    padding: 1rem !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    background-color: white !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* 确保桌面端侧边栏header样式与TopHeader一致 */
+  aside:not([class*="w-0"]) .p-4.border-b {
+    padding: 1rem !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    background-color: white !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* 主内容区域填充整个宽度 */
+  /* 只针对App.vue中的main，不覆盖子组件 */
+  .flex.h-screen > main {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+  
+  /* 确保页面容器可以滚动 */
+  .flex.h-screen {
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  /* 页面内容区域可以滚动 */
+  /* 只针对App.vue中的main，不覆盖子组件 */
+  .flex.h-screen > main > .scrollable-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  /* 移动端表单模态框内容全部展示，不设置滚动 */
+  @media (max-width: 1023px) {
+    .bg-white.rounded-xl.shadow-xl {
+      max-height: none !important;
+      overflow-y: visible !important;
+    }
+    
+    /* 表单内容区域不限制高度，全部展示 */
+    .bg-white.rounded-xl.shadow-xl .p-6 {
+      overflow-y: visible !important;
+      max-height: none;
+    }
+  }
+}
+
+/* 大屏幕（大于等于1024px）时显示侧边栏 */
+@media (min-width: 1024px) {
+  /* 显示侧边栏 */
+  aside:not([class*="w-0"]) {
+    display: flex !important;
+  }
+  
+  /* 侧边栏收起时隐藏 */
+  aside[class*="w-0"] {
+    display: none !important;
+  }
+  
+  /* 主内容区域自适应 */
+  /* 只针对App.vue中的main，不覆盖子组件 */
+  .flex.h-screen > main {
+    flex: 1 1 0%;
+    min-width: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: width 0.3s;
+  }
+  
+  /* 当侧边栏收起时，主内容区域填满屏幕 */
+  .flex.h-screen.sidebar-collapsed > main {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+}
+
+/* 确保所有页面内容区域可以滚动 */
+/* 注意：这个样式只应用于App.vue中的main标签，不覆盖子组件中的main */
+.flex.h-screen > main {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* iOS 平滑滚动 */
+}
+
+/* 页面容器自适应 */
+.page-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== 响应式表格样式 ==================== */
+
+/* 系统日志表格容器 */
+.system-log-table-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 系统日志表格包装器 */
+.system-log-table-wrapper {
+  width: 100%;
+  position: relative;
+  overflow-x: auto;
+  overflow-y: visible; /* 允许内容自然显示，不限制高度 */
+}
+
+/* 系统日志表格 */
+.system-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 0.9375rem; /* 15px，比默认的14px稍大 */
+}
+
+.system-log-table th,
+.system-log-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 1.5rem; /* 增加内边距 */
+}
+
+.system-log-table thead th {
+  border-bottom: 2px solid #e5e7eb;
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.system-log-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.system-log-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 小屏幕（小于768px）时表格横向滚动 */
+@media (max-width: 767px) {
+  .system-log-table {
+    min-width: 900px; /* 确保表格有最小宽度，触发横向滚动 */
+  }
+  
+  .system-log-table th,
+  .system-log-table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  /* 表格容器添加滚动指示 */
+  .system-log-table-wrapper::after {
+    content: '← 滑动查看更多 →';
+    position: absolute;
+    bottom: -20px;
+    right: 0;
+    font-size: 12px;
+    color: #999;
+    pointer-events: none;
+  }
+}
+
+/* 中等屏幕（768px-1023px）时优化表格显示 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .system-log-table th,
+  .system-log-table td {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* 大屏幕（大于等于1024px）时正常显示 */
+@media (min-width: 1024px) {
+  .system-log-table {
+    width: 100%;
+  }
+  
+  .system-log-table th,
+  .system-log-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* 表格单元格文本溢出处理 */
+.system-log-table td {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 操作内容列允许换行 */
+.system-log-table td:nth-child(4) {
+  white-space: normal;
+  word-break: break-word;
+  max-width: 250px;
+}
+
+/* 允许某些列换行 */
+.system-log-table td.allow-wrap {
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* 通用响应式表格样式（保留兼容性） */
+.responsive-table {
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.responsive-table th,
+.responsive-table td {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.responsive-table thead th {
+  border-bottom: 2px solid #e5e7eb;
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.responsive-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* ==================== 深色主题样式（使用主题类，优化视觉效果） ==================== */
+.theme-dark {
+  color-scheme: dark;
+}
+
+.theme-dark body {
+  background-color: #1a1a1a !important;
+  color: #e5e5e5 !important;
+}
+
+/* 通用背景色 - 覆盖硬编码的Tailwind类 */
+.theme-dark .bg-white {
+  background-color: #2d2d2d !important;
+}
+
+.theme-dark .bg-neutral {
+  background-color: #1a1a1a !important;
+}
+
+.theme-dark .bg-gray-50,
+.theme-dark .bg-gray-100 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.theme-dark .bg-gray-200 {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 边框颜色 */
+.theme-dark .border-gray-200,
+.theme-dark .border-gray-300,
+.theme-dark .border-b,
+.theme-dark .border-t,
+.theme-dark .border-r,
+.theme-dark .border-l {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 文字颜色 */
+.theme-dark .text-gray-500,
+.theme-dark .text-gray-600 {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.theme-dark .text-gray-400 {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.theme-dark .text-dark,
+.theme-dark h1,
+.theme-dark h2,
+.theme-dark h3,
+.theme-dark h4,
+.theme-dark h5,
+.theme-dark h6 {
+  color: var(--dark-text) !important;
+}
+
+.theme-dark .text-gray-700,
+.theme-dark .text-gray-800,
+.theme-dark .text-gray-900 {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 悬停效果 */
+.theme-dark .hover\:bg-gray-50:hover,
+.theme-dark .hover\:bg-gray-100:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 输入框 */
+.theme-dark input,
+.theme-dark textarea,
+.theme-dark select {
+  background-color: var(--dark-card) !important;
+  color: var(--dark-text) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark input:focus,
+.theme-dark textarea:focus,
+.theme-dark select:focus {
+  background-color: var(--dark-card) !important;
+  border-color: var(--dark-primary) !important;
+}
+
+.theme-dark input::placeholder,
+.theme-dark textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 卡片和容器 */
+.theme-dark .bg-white.rounded-xl,
+.theme-dark .bg-white.rounded-lg {
+  background-color: var(--dark-card) !important;
+}
+
+.theme-dark .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.theme-dark .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2) !important;
+}
+
+.theme-dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 滚动条深色模式 */
+.theme-dark ::-webkit-scrollbar-track {
+  background: var(--dark-card) !important;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* 侧边栏特定样式 */
+.theme-dark aside {
+  background-color: var(--dark-card) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark aside header,
+.theme-dark aside .p-4.border-b {
+  background-color: var(--dark-card) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark aside .category-title {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.theme-dark aside .category-header:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.theme-dark aside .category-divider {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark aside a.text-gray-600 {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.theme-dark aside a:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* TopHeader 深色模式 */
+.theme-dark header {
+  background-color: var(--dark-card) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark header h1 {
+  color: var(--dark-text) !important;
+}
+
+.theme-dark header button {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.theme-dark header button:hover {
+  color: var(--dark-primary) !important;
+}
+
+/* 设置侧边栏深色模式 */
+.theme-dark aside.border-l {
+  background-color: var(--dark-card) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark aside.border-l .p-4.border-b {
+  background-color: var(--dark-card) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark aside.border-l h1,
+.theme-dark aside.border-l h3 {
+  color: var(--dark-text) !important;
+}
+
+.theme-dark aside.border-l .text-gray-700 {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.theme-dark aside.border-l .text-gray-500 {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.theme-dark aside.border-l button.bg-gray-50 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.theme-dark aside.border-l button.bg-gray-50:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}

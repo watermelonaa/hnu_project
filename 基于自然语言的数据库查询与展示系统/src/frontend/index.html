@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自然语言数据库查询系统</title>
+    <!-- Font Awesome CDN（临时方案，避免 Tracking Prevention 问题） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Tailwind CSS CDN（临时恢复，确保界面样式正常） -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置自定义主题 -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#165DFF',
+              secondary: '#36BFFA',
+              neutral: '#F5F7FA',
+              dark: '#1D2129',
+              success: '#00B42A',
+              warning: '#FF7D00',
+              danger: '#F53F3F',
+            },
+            fontFamily: {
+              inter: ['Inter', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- 自定义 CSS -->
+    <link rel="stylesheet" href="/index.css">
+    <!-- Polyfill for sockjs-client: 定义 global 变量 -->
+    <script>
+      if (typeof global === 'undefined') {
+        var global = globalThis;
+      }
+    </script>
+</head>
+<body class="bg-neutral font-inter text-dark min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

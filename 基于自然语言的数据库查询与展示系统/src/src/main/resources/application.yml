@@ -1,0 +1,100 @@
+server:
+  port: 8173
+
+spring:
+  application:
+    name: springboot_demo
+
+  # MySQL 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3307/natural_language_query_system?useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root123456
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+  # MongoDB 配置
+  data:
+    mongodb:
+      # 本地Docker MongoDB，无账号密码直接连接
+      uri: mongodb://127.0.0.1:27017/natural_language_query_system
+    # Redis 配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    # password: Nlq20232601sqbm  # 本地docker redis没设置密码，注释/删除此行
+    database: 0
+    timeout: 3000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+  # 邮件配置
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 2907551361@qq.com
+    password: uakempkmfbjrdgaj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    default-encoding: UTF-8
+
+# MyBatis Plus 配置
+mybatis-plus:
+  # Mapper XML 文件位置
+  mapper-locations: classpath:mapper/**/*.xml
+  # 实体类包路径
+  type-aliases-package: com.example.springboot_demo.entity.mysql
+  configuration:
+    # 日志输出
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 驼峰命名转换
+    map-underscore-to-camel-case: true
+    # 缓存
+    cache-enabled: true
+  global-config:
+    db-config:
+      # 主键策略：自增
+      id-type: auto
+      # 逻辑删除字段
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# Actuator 配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# 应用配置
+app:
+  frontend-url: http://124.71.230.175
+  reset-password-url: http://124.71.230.175/reset-password
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.example.springboot_demo: DEBUG
+    com.example.springboot_demo.mapper: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

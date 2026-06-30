@@ -1,0 +1,94 @@
+<view class="page">
+  <scroll-view class="content" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="header-card">
+      <view class="header-copy">
+        <text class="eyebrow">编辑药品</text>
+        <text class="page-title">{{pageTitle}}</text>
+        <text class="page-desc">修改后会同步更新库存索引与效期倒计时。</text>
+      </view>
+      <view class="header-mark">
+        <text>改</text>
+      </view>
+    </view>
+
+    <view class="form-card">
+      <view class="section-head">
+        <text class="section-title">基础信息</text>
+        <text class="section-note">名称与分类</text>
+      </view>
+
+      <view class="field">
+        <text class="field-label">药品名称</text>
+        <input class="field-input" placeholder="请输入药品名称" placeholder-class="placeholder" value="{{drug.name}}" bindinput="onNameInput" />
+      </view>
+
+      <view class="field">
+        <text class="field-label">数量</text>
+        <input class="field-input" placeholder="例如：1盒 / 1瓶" placeholder-class="placeholder" value="{{drug.qty}}" bindinput="onQtyInput" />
+      </view>
+
+      <view class="field">
+        <text class="field-label">剂型</text>
+        <picker mode="selector" range="{{dosageFormOptions}}" range-key="name" value="{{dosageFormIndex}}" bindchange="onDosageFormChange">
+          <view class="picker-view">
+            <text class="picker-text">{{dosageFormOptions[dosageFormIndex].name}}</text>
+            <text class="picker-icon">⌄</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="field">
+        <text class="field-label">分类</text>
+        <picker mode="selector" range="{{categoryOptions}}" range-key="name" value="{{categoryIndex}}" bindchange="onCategoryChange">
+          <view class="picker-view">
+            <text class="picker-text">{{categoryOptions[categoryIndex].name}}</text>
+            <text class="picker-icon">⌄</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-card">
+      <view class="section-head">
+        <text class="section-title">效期状态</text>
+        <text class="section-note">提醒优先级</text>
+      </view>
+
+      <view class="field" wx:if="{{showOpenState}}">
+        <text class="field-label">开封状态</text>
+        <picker mode="selector" range="{{openStateOptions}}" range-key="name" value="{{openStateIndex}}" bindchange="onOpenStateChange">
+          <view class="picker-view">
+            <text class="picker-text">{{openStateOptions[openStateIndex].name}}</text>
+            <text class="picker-icon">⌄</text>
+          </view>
+        </picker>
+        <text class="field-hint">瓶装和软膏类药品建议记录是否已开封。</text>
+      </view>
+
+      <view class="field">
+        <text class="field-label">到期日期</text>
+        <picker mode="date" value="{{drug.date}}" start="2020-01-01" end="2035-12-31" bindchange="onDateChange">
+          <view class="picker-view date-picker">
+            <text class="picker-text {{datePlaceholderClass}}">{{dateText}}</text>
+            <text class="picker-icon">⌄</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="status-row">
+        <view class="status-copy">
+          <text class="status-label">当前判断</text>
+          <text class="status-desc">根据到期日期自动计算</text>
+        </view>
+        <view class="status-preview" style="background: {{statusPreview.bgColor}}; color: {{statusPreview.textColor}};">
+          <text>{{statusPreview.text}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="btns">
+      <button class="btn ghost" bindtap="cancelEdit">取消</button>
+      <button class="btn main" loading="{{isSaving}}" disabled="{{isSaving}}" bindtap="saveDrug">保存修改</button>
+    </view>
+  </scroll-view>
+</view>

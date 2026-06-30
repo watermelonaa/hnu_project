@@ -1,0 +1,968 @@
+### 测试 Hello
+GET http://localhost:8080/test/hello
+
+### 测试所有数据库
+GET http://localhost:8080/test/all
+
+### ==================== 新增表接口测试 ====================
+
+### 好友关系 - 查询用户好友列表
+GET http://localhost:8080/friend-relation/list/1
+
+### 好友关系 - 添加好友
+POST http://localhost:8080/friend-relation
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "friendId": 2,
+  "friendUsername": "user2",
+  "remarkName": "小明"
+}
+
+### 好友请求 - 查询待处理请求
+GET http://localhost:8080/friend-request/list/1/0
+
+### 好友请求 - 发送好友请求
+POST http://localhost:8080/friend-request
+Content-Type: application/json
+
+{
+  "applicantId": 1,
+  "recipientId": 2,
+  "applyMsg": "我是张三，加个好友"
+}
+
+### 好友请求 - 处理请求（同意）
+PUT http://localhost:8080/friend-request
+Content-Type: application/json
+
+{
+  "id": 1,
+  "status": 1
+}
+
+### 查询分享 - 查询接收的分享
+GET http://localhost:8080/query-share/list/receive/1
+
+### 查询分享 - 分享查询
+POST http://localhost:8080/query-share
+Content-Type: application/json
+
+{
+  "shareUserId": 1,
+  "receiveUserId": 2,
+  "dialogId": "conv_12345",
+  "targetRounds": "[1,2,3]",
+  "queryTitle": "销售数据分析"
+}
+
+### Token消耗 - 查询所有记录
+GET http://localhost:8080/token-consume/list
+
+### Token消耗 - 查询指定日期
+GET http://localhost:8080/token-consume/gemini-2.5-pro/2025-12-01
+
+### Token消耗 - 添加记录
+POST http://localhost:8080/token-consume
+Content-Type: application/json
+
+{
+  "llmName": "gemini-2.5-pro",
+  "totalTokens": 1500,
+  "promptTokens": 1000,
+  "completionTokens": 500,
+  "consumeDate": "2025-12-01"
+}
+
+### 性能指标 - 查询所有
+GET http://localhost:8080/performance-metric/list
+
+### 性能指标 - 按类型查询
+GET http://localhost:8080/performance-metric/list/query_count
+
+### 性能指标 - 添加记录
+POST http://localhost:8080/performance-metric
+Content-Type: application/json
+
+{
+  "metricType": "query_count",
+  "metricValue": 150,
+  "metricTime": "2025-12-01T10:00:00"
+}
+
+### 连接日志 - 查询所有
+GET http://localhost:8080/db-connection-log/list
+
+### 连接日志 - 按连接ID查询
+GET http://localhost:8080/db-connection-log/list/connection/1
+
+### 连接日志 - 添加日志
+POST http://localhost:8080/db-connection-log
+Content-Type: application/json
+
+{
+  "dbConnectionId": 1,
+  "dbName": "订单主库",
+  "status": "success",
+  "handlerId": 1
+}
+
+### 用户搜索 - 查询用户搜索历史
+GET http://localhost:8080/user-search/list/1
+
+### 用户搜索 - 查询常用搜索（Top 5）
+GET http://localhost:8080/user-search/list/top/1/5
+
+### 用户搜索 - 记录搜索
+POST http://localhost:8080/user-search
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "sqlContent": "SELECT * FROM users WHERE status = 1",
+  "queryTitle": "查询活跃用户"
+}
+
+### 收藏组 - 查询用户收藏组
+GET http://localhost:8080/query-collection/list/1
+
+### 收藏组 - 创建收藏组
+POST http://localhost:8080/query-collection
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "groupName": "销售报表查询"
+}
+
+### 收藏记录 - 按组查询
+GET http://localhost:8080/collection-record/list/query/674c8e9f1234567890abcdef
+
+### 收藏记录 - 添加收藏
+POST http://localhost:8080/collection-record
+Content-Type: application/json
+
+{
+  "queryId": "674c8e9f1234567890abcdef",
+  "userId": 1,
+  "sqlContent": "SELECT * FROM orders WHERE date > '2025-01-01'",
+  "dbConnectionId": 1,
+  "llmConfigId": 1
+}
+
+### 对话详情 - 查询对话内容
+GET http://localhost:8080/dialog-detail/conv_12345
+
+### 对话详情 - 保存对话
+POST http://localhost:8080/dialog-detail
+Content-Type: application/json
+
+{
+  "dialogId": "conv_12345",
+  "rounds": [
+    {
+      "roundNum": 1,
+      "userInput": "查询所有用户",
+      "aiResponse": "已生成SQL查询",
+      "generatedSql": "SELECT * FROM users"
+    }
+  ]
+}
+
+### SQL缓存 - 查询用户缓存
+GET http://localhost:8080/sql-cache/list/1
+
+### SQL缓存 - 添加缓存
+POST http://localhost:8080/sql-cache
+Content-Type: application/json
+
+{
+  "nlHash": "abc123def456",
+  "userId": 1,
+  "connectionId": 1,
+  "tableIds": [1, 2],
+  "dbType": "mysql",
+  "generatedSql": "SELECT * FROM users",
+  "hitCount": 0,
+  "expireTime": "2025-12-08T00:00:00"
+}
+
+### AI交互日志 - 按用户查询
+GET http://localhost:8080/ai-interaction-log/list/user/1
+
+### AI交互日志 - 按模型查询
+GET http://localhost:8080/ai-interaction-log/list/llm/gemini-2.5-pro
+
+### AI交互日志 - 添加日志
+POST http://localhost:8080/ai-interaction-log
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "requestType": "nl2sql",
+  "llmName": "gemini-2.5-pro",
+  "requestParams": {
+    "naturalLanguage": "查询所有用户"
+  },
+  "tokenUsage": {
+    "promptTokens": 100,
+    "completionTokens": 50,
+    "totalTokens": 150
+  },
+  "responseTime": 1200,
+  "status": "success"
+}
+
+### 好友聊天 - 查询聊天记录
+GET http://localhost:8080/friend-chat/list/1/2
+
+### 好友聊天 - 查询未读消息
+GET http://localhost:8080/friend-chat/unread/1
+
+### 好友聊天 - 发送消息
+POST http://localhost:8080/friend-chat
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "friendId": 2,
+  "contentType": "text",
+  "content": {
+    "text": "你好，最近怎么样？"
+  }
+}
+
+### ==================== 认证接口 ====================
+
+### 登录
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+### 忘记密码 - 请求重置密码邮件
+POST http://localhost:8173/api/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "test@example.com"
+}
+
+### 忘记密码 - 测试邮箱格式验证（应该返回错误）
+POST http://localhost:8173/api/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "invalid-email"
+}
+
+### 忘记密码 - 测试空邮箱（应该返回错误）
+POST http://localhost:8173/api/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": ""
+}
+
+### ==================== 查询执行接口 ====================
+
+### 执行查询（新对话）
+POST http://localhost:8080/query/execute
+Content-Type: application/json
+userId: 1
+
+{
+  "userPrompt": "查询所有用户信息",
+  "model": "gemini-2.5-pro",
+  "database": "销售数据库"
+}
+
+### 执行查询（继续对话）
+POST http://localhost:8080/query/execute
+Content-Type: application/json
+userId: 1
+
+{
+  "userPrompt": "按订单量排序",
+  "model": "gemini-2.5-pro",
+  "database": "销售数据库",
+  "conversationId": "conv_12345678"
+}
+
+### ==================== 对话历史接口 ====================
+
+### 获取用户对话列表
+GET http://localhost:8080/dialog/list
+userId: 1
+
+### 获取对话详情
+GET http://localhost:8080/dialog/conv_12345678
+
+### ==================== 用户管理接口 ====================
+
+### 查询所有用户
+GET http://localhost:8080/user/list
+
+### 添加用户
+POST http://localhost:8080/user
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456",
+  "email": "admin@example.com",
+  "phonenumber": "13800138000",
+  "roleId": 1,
+  "status": 1
+}
+
+### 分页查询
+GET http://localhost:8080/user/page?current=1&size=10
+
+### 根据ID查询
+GET http://localhost:8080/user/3
+
+### 更新用户
+PUT http://localhost:8080/user
+Content-Type: application/json
+
+{
+  "id": 3,
+  "username": "admin",
+  "email": "newemail@example.com",
+  "status": 1
+}
+
+### 删除用户
+DELETE http://localhost:8080/user/3
+
+### 根据用户名查询
+GET http://localhost:8080/user/username/admin
+
+### 根据手机号搜索用户
+GET http://localhost:8080/user/search/phone?phoneNumber=13800138000
+
+### 修改密码
+POST http://localhost:8080/user/change-password
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "oldPassword": "123456",
+  "newPassword": "newpassword123"
+}
+
+### ==================== 好友管理接口 ====================
+
+### 查询用户的好友列表
+GET http://localhost:8080/friend-relation/list/1
+
+### 查询特定好友关系
+GET http://localhost:8080/friend-relation/1/2
+
+### 添加好友关系（通常由系统自动创建）
+POST http://localhost:8080/friend-relation
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "friendId": 2,
+  "friendUsername": "user2",
+  "onlineStatus": 1,
+  "remarkName": "小明"
+}
+
+### 更新好友备注
+PUT http://localhost:8080/friend-relation
+Content-Type: application/json
+
+{
+  "id": 1,
+  "remarkName": "我的好朋友小明"
+}
+
+### 删除好友关系（通过关系ID）
+DELETE http://localhost:8080/friend-relation/1
+
+### 删除好友关系（通过用户ID和好友ID）
+DELETE http://localhost:8080/friend-relation/1/2
+
+### ==================== 好友请求接口 ====================
+
+### 查询用户收到的所有好友请求
+GET http://localhost:8080/friend-request/list/1
+
+### 查询用户收到的待处理好友请求（status=0）
+GET http://localhost:8080/friend-request/list/1/0
+
+### 查询特定好友请求
+GET http://localhost:8080/friend-request/1
+
+### 发送好友请求
+POST http://localhost:8080/friend-request
+Content-Type: application/json
+
+{
+  "applicantId": 1,
+  "recipientId": 2,
+  "applyMsg": "你好，我想加你为好友",
+  "status": 0
+}
+
+### 接受好友请求（自动创建双向好友关系）
+POST http://localhost:8080/friend-request/1/accept
+
+### 拒绝好友请求
+POST http://localhost:8080/friend-request/1/reject
+
+### 删除好友请求记录
+DELETE http://localhost:8080/friend-request/1
+
+### ==================== 数据库连接管理接口 ====================
+
+### 查询所有数据库连接
+GET http://localhost:8080/db-connection/list
+
+### 根据创建者查询数据库连接
+GET http://localhost:8080/db-connection/list/4
+
+### 根据ID查询数据库连接
+GET http://localhost:8080/db-connection/1
+
+### 添加数据库连接
+POST http://localhost:8080/db-connection
+Content-Type: application/json
+
+{
+  "name": "测试MySQL连接",
+  "dbTypeId": 1,
+  "url": "127.0.0.1:3306/test_db",
+  "username": "root",
+  "password": "password",
+  "status": "disconnected",
+  "createUserId": 4
+}
+
+### 更新数据库连接
+PUT http://localhost:8080/db-connection
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "更新后的连接名称",
+  "status": "connected"
+}
+
+### 测试数据库连接
+GET http://localhost:8080/db-connection/test/1
+
+### 删除数据库连接
+DELETE http://localhost:8080/db-connection/1
+
+### ==================== 大模型配置接口 ====================
+
+### 查询所有大模型配置
+GET http://localhost:8080/llm-config/list
+
+### 查询可用的大模型配置
+GET http://localhost:8080/llm-config/list/available
+
+### 根据ID查询大模型配置
+GET http://localhost:8080/llm-config/1
+
+### 添加大模型配置
+POST http://localhost:8080/llm-config
+Content-Type: application/json
+
+{
+  "name": "智谱AI",
+  "version": "4.0",
+  "apiKey": "your-api-key-here",
+  "apiUrl": "https://api.zhipuai.com/v4/chat/completions",
+  "statusId": 1,
+  "isDisabled": 0,
+  "timeout": 5000,
+  "createUserId": 4
+}
+
+### 更新大模型配置
+PUT http://localhost:8080/llm-config
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "智谱AI",
+  "version": "4.5",
+  "timeout": 8000
+}
+
+### 禁用/启用大模型配置
+PUT http://localhost:8080/llm-config/1/toggle
+
+### 删除大模型配置
+DELETE http://localhost:8080/llm-config/1
+
+### ==================== 数据表元数据接口 ====================
+
+### 查询所有表元数据
+GET http://localhost:8080/table-metadata/list
+
+### 根据数据库连接ID查询表元数据
+GET http://localhost:8080/table-metadata/list/1
+
+### 根据ID查询表元数据
+GET http://localhost:8080/table-metadata/1
+
+### 添加表元数据
+POST http://localhost:8080/table-metadata
+Content-Type: application/json
+
+{
+  "dbConnectionId": 1,
+  "tableName": "orders",
+  "description": "订单表，存储所有订单信息"
+}
+
+### 更新表元数据
+PUT http://localhost:8080/table-metadata
+Content-Type: application/json
+
+{
+  "id": 1,
+  "tableName": "orders",
+  "description": "订单表（已更新）"
+}
+
+### 删除表元数据
+DELETE http://localhost:8080/table-metadata/1
+
+### ==================== 字段元数据接口 ====================
+
+### 查询所有字段元数据
+GET http://localhost:8080/column-metadata/list
+
+### 根据表ID查询字段元数据
+GET http://localhost:8080/column-metadata/list/1
+
+### 根据ID查询字段元数据
+GET http://localhost:8080/column-metadata/1
+
+### 添加字段元数据
+POST http://localhost:8080/column-metadata
+Content-Type: application/json
+
+{
+  "tableId": 1,
+  "columnName": "order_id",
+  "dataType": "bigint(20)",
+  "description": "订单唯一标识",
+  "isPrimary": 1
+}
+
+### 更新字段元数据
+PUT http://localhost:8080/column-metadata
+Content-Type: application/json
+
+{
+  "id": 1,
+  "columnName": "order_id",
+  "description": "订单ID（主键）"
+}
+
+### 删除字段元数据
+DELETE http://localhost:8080/column-metadata/1
+
+### ==================== 查询日志接口 ====================
+
+### 查询所有查询日志
+GET http://localhost:8080/query-log/list
+
+### 根据用户ID查询查询日志
+GET http://localhost:8080/query-log/list/user/4
+
+### 根据对话ID查询查询日志
+GET http://localhost:8080/query-log/list/dialog/conv_12345678
+
+### 根据ID查询查询日志
+GET http://localhost:8080/query-log/1
+
+### 添加查询日志
+POST http://localhost:8080/query-log
+Content-Type: application/json
+
+{
+  "dialogId": "conv_12345678",
+  "dataSourceId": 1,
+  "userId": 4,
+  "executeResult": 1
+}
+
+### 删除查询日志
+DELETE http://localhost:8080/query-log/1
+
+### ==================== 数据库类型字典接口 ====================
+
+### 查询所有数据库类型
+GET http://localhost:8080/db-type/list
+
+### 根据ID查询数据库类型
+GET http://localhost:8080/db-type/1
+
+### 根据类型编码查询
+GET http://localhost:8080/db-type/code/mysql
+
+### 添加数据库类型
+POST http://localhost:8080/db-type
+Content-Type: application/json
+
+{
+  "typeName": "MySQL",
+  "typeCode": "mysql",
+  "description": "关系型数据库"
+}
+
+### 更新数据库类型
+PUT http://localhost:8080/db-type
+Content-Type: application/json
+
+{
+  "id": 1,
+  "typeName": "MySQL",
+  "description": "关系型数据库（已更新）"
+}
+
+### 删除数据库类型
+DELETE http://localhost:8080/db-type/1
+
+### ==================== 大模型状态字典接口 ====================
+
+### 查询所有大模型状态
+GET http://localhost:8080/llm-status/list
+
+### 根据ID查询大模型状态
+GET http://localhost:8080/llm-status/1
+
+### 根据状态编码查询
+GET http://localhost:8080/llm-status/code/available
+
+### 添加大模型状态
+POST http://localhost:8080/llm-status
+Content-Type: application/json
+
+{
+  "statusName": "可用",
+  "statusCode": "available",
+  "description": "API成功率≥95%"
+}
+
+### 更新大模型状态
+PUT http://localhost:8080/llm-status
+Content-Type: application/json
+
+{
+  "id": 1,
+  "statusName": "可用",
+  "description": "API成功率≥98%"
+}
+
+### 删除大模型状态
+DELETE http://localhost:8080/llm-status/1
+
+### ==================== 用户数据权限接口 ====================
+
+### 查询所有权限
+GET http://localhost:8080/user-db-permission/list
+
+### 查询已分配权限的用户
+GET http://localhost:8080/user-db-permission/list/assigned
+
+### 查询未分配权限的用户
+GET http://localhost:8080/user-db-permission/list/unassigned
+
+### 根据ID查询权限
+GET http://localhost:8080/user-db-permission/1
+
+### 根据用户ID查询权限
+GET http://localhost:8080/user-db-permission/user/4
+
+### 添加用户权限
+POST http://localhost:8080/user-db-permission
+Content-Type: application/json
+
+{
+  "userId": 4,
+  "permissionDetails": "[{\"db_connection_id\":1,\"table_ids\":[1,2,3]}]",
+  "lastGrantUserId": 4,
+  "isAssigned": 1
+}
+
+### 更新用户权限
+PUT http://localhost:8080/user-db-permission
+Content-Type: application/json
+
+{
+  "id": 1,
+  "userId": 4,
+  "permissionDetails": "[{\"db_connection_id\":1,\"table_ids\":[1,2,3,4,5]}]",
+  "lastGrantUserId": 4
+}
+
+### 删除用户权限
+DELETE http://localhost:8080/user-db-permission/1
+
+### ==================== 系统操作日志接口 ====================
+
+### 查询所有操作日志
+GET http://localhost:8080/operation-log/list
+
+### 根据用户ID查询操作日志
+GET http://localhost:8080/operation-log/list/user/4
+
+### 根据模块查询操作日志
+GET http://localhost:8080/operation-log/list/module/数据源管理
+
+### 查询失败的操作日志
+GET http://localhost:8080/operation-log/list/failed
+
+### 根据ID查询操作日志
+GET http://localhost:8080/operation-log/1
+
+### 添加操作日志
+POST http://localhost:8080/operation-log
+Content-Type: application/json
+
+{
+  "userId": 4,
+  "username": "admin",
+  "operation": "创建数据库连接",
+  "module": "数据源管理",
+  "relatedLlm": null,
+  "ipAddress": "127.0.0.1",
+  "result": 1,
+  "errorMsg": null
+}
+
+### 删除操作日志
+DELETE http://localhost:8080/operation-log/1
+
+### ==================== 错误日志接口 ====================
+
+### 查询所有错误日志
+GET http://localhost:8080/error-log/list
+
+### 根据错误类型查询
+GET http://localhost:8080/error-log/list/type/1
+
+### 根据统计周期查询
+GET http://localhost:8080/error-log/list/period/today
+
+### 根据ID查询错误日志
+GET http://localhost:8080/error-log/1
+
+### 添加错误日志
+POST http://localhost:8080/error-log
+Content-Type: application/json
+
+{
+  "errorTypeId": 1,
+  "errorCount": 5,
+  "errorRate": 2.5,
+  "period": "today"
+}
+
+### 更新错误日志
+PUT http://localhost:8080/error-log
+Content-Type: application/json
+
+{
+  "id": 1,
+  "errorCount": 10,
+  "errorRate": 5.0
+}
+
+### 删除错误日志
+DELETE http://localhost:8080/error-log/1
+
+### ==================== 错误类型字典接口 ====================
+
+### 查询所有错误类型
+GET http://localhost:8080/error-type/list
+
+### 根据ID查询错误类型
+GET http://localhost:8080/error-type/1
+
+### 根据错误编码查询
+GET http://localhost:8080/error-type/code/llm_timeout
+
+### 添加错误类型
+POST http://localhost:8080/error-type
+Content-Type: application/json
+
+{
+  "errorName": "模型调用超时",
+  "errorCode": "llm_timeout",
+  "description": "大模型API响应时间超过设定阈值"
+}
+
+### 更新错误类型
+PUT http://localhost:8080/error-type
+Content-Type: application/json
+
+{
+  "id": 1,
+  "errorName": "模型调用超时",
+  "description": "大模型API响应时间超过5秒"
+}
+
+### 删除错误类型
+DELETE http://localhost:8080/error-type/1
+
+### ==================== 通知目标字典接口 ====================
+
+### 查询所有通知目标
+GET http://localhost:8080/notification-target/list
+
+### 根据ID查询通知目标
+GET http://localhost:8080/notification-target/1
+
+### 根据目标编码查询
+GET http://localhost:8080/notification-target/code/all
+
+### 添加通知目标
+POST http://localhost:8080/notification-target
+Content-Type: application/json
+
+{
+  "targetName": "所有用户",
+  "targetCode": "all",
+  "description": "发送给系统所有用户"
+}
+
+### 更新通知目标
+PUT http://localhost:8080/notification-target
+Content-Type: application/json
+
+{
+  "id": 1,
+  "targetName": "所有用户",
+  "description": "发送给系统所有注册用户"
+}
+
+### 删除通知目标
+DELETE http://localhost:8080/notification-target/1
+
+### ==================== 优先级字典接口 ====================
+
+### 查询所有优先级（按排序）
+GET http://localhost:8080/priority/list
+
+### 根据ID查询优先级
+GET http://localhost:8080/priority/1
+
+### 根据优先级编码查询
+GET http://localhost:8080/priority/code/urgent
+
+### 添加优先级
+POST http://localhost:8080/priority
+Content-Type: application/json
+
+{
+  "priorityName": "紧急",
+  "priorityCode": "urgent",
+  "sort": 1
+}
+
+### 更新优先级
+PUT http://localhost:8080/priority
+Content-Type: application/json
+
+{
+  "id": 1,
+  "priorityName": "紧急",
+  "sort": 0
+}
+
+### 删除优先级
+DELETE http://localhost:8080/priority/1
+
+### ==================== 通知管理接口 ====================
+
+### 查询所有通知
+GET http://localhost:8080/notification/list
+
+### 查询已发布的通知
+GET http://localhost:8080/notification/list/published
+
+### 查询草稿
+GET http://localhost:8080/notification/list/drafts
+
+### 根据目标ID查询通知
+GET http://localhost:8080/notification/list/target/1
+
+### 根据ID查询通知
+GET http://localhost:8080/notification/1
+
+### 添加通知（草稿）
+POST http://localhost:8080/notification
+Content-Type: application/json
+
+{
+  "title": "系统维护通知",
+  "content": "系统将于今晚22:00-24:00进行维护，请提前保存数据",
+  "targetId": 1,
+  "priorityId": 1,
+  "publisherId": 4,
+  "isTop": 0
+}
+
+### 更新通知
+PUT http://localhost:8080/notification
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "系统维护通知（已更新）",
+  "content": "系统将于今晚22:00-次日00:30进行维护，请提前保存数据"
+}
+
+### 发布通知
+PUT http://localhost:8080/notification/1/publish
+
+### 置顶/取消置顶
+PUT http://localhost:8080/notification/1/toggle-top
+
+### 删除通知
+DELETE http://localhost:8080/notification/1
+
+### ==================== 系统健康监控接口 ====================
+
+### 查询所有健康记录
+GET http://localhost:8080/system-health/list
+
+### 查询最新的健康记录
+GET http://localhost:8080/system-health/latest
+
+### 查询最近10条健康记录
+GET http://localhost:8080/system-health/recent/10
+
+### 根据ID查询健康记录
+GET http://localhost:8080/system-health/1
+
+### 添加健康记录
+POST http://localhost:8080/system-health
+Content-Type: application/json
+
+{
+  "dbDelay": 10,
+  "cacheDelay": 2,
+  "llmDelay": 150,
+  "storageUsage": 75.5
+}
+
+### 删除健康记录
+DELETE http://localhost:8080/system-health/1
+

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>药物效期管家 - AI 助手</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Alibaba PuHuiTi", "PingFang SC", "Helvetica Neue", sans-serif; background: #edf2fb; min-height: 100vh; display: grid; place-items: center; color: #1f2937; }
+    .phone { width: 393px; height: 852px; border-radius: 52px; padding: 12px; background: linear-gradient(180deg, #22252b 0%, #13161b 100%); box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35); border: 1px solid #0f1115; }
+    .screen { width: 100%; height: 100%; border-radius: 40px; background: #f5f8fd; overflow: hidden; position: relative; }
+    .screen::before { content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%); width:116px; height:28px; border-radius:18px; background:#0f1115; z-index:3; }
+    .status { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600; }
+    .status .icons { display: flex; align-items: center; gap: 8px; }
+    .head { padding: 8px 16px 10px; display: flex; justify-content: space-between; align-items: center; }
+    .head h2 { font-size: 24px; }
+    .chat { height: 650px; overflow: auto; padding: 0 16px 178px; }
+    .msg { display: flex; margin-bottom: 12px; gap: 8px; }
+    .msg.ai { justify-content: flex-start; }
+    .msg.user { justify-content: flex-end; }
+    .bubble {
+      max-width: 76%;
+      border-radius: 16px;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.45;
+      box-shadow: 0 6px 16px rgba(15,23,42,.06);
+    }
+    .ai .bubble { background: #fff; border-top-left-radius: 6px; }
+    .user .bubble { background: linear-gradient(135deg,#2f80ed,#4facfe); color: #fff; border-top-right-radius: 6px; }
+    .tips {
+      background: #ecfdf5; border: 1px solid #bbf7d0; color: #166534;
+      border-radius: 12px; padding: 8px 10px; font-size: 12px; margin-bottom: 12px;
+    }
+    .input {
+      position: absolute; left: 12px; right: 12px; bottom: 116px;
+      background: #fff; border-radius: 16px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 8px 22px rgba(15,23,42,.12);
+    }
+    .chat-input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 14px;
+      color: #1f2937;
+      font-family: inherit;
+      background: transparent;
+    }
+    .send {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #2563eb;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      border: none;
+      cursor: pointer;
+    }
+    .tabbar {
+      position: absolute; left: 12px; right: 12px; bottom: 34px;
+      background: rgba(255,255,255,.95); border-radius: 20px;
+      display: grid; grid-template-columns: repeat(4,1fr); padding: 10px 0 8px;
+      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
+    }
+    .tab { text-align: center; font-size: 11px; color: #64748b; text-decoration: none; }
+    .tab i { display: block; font-size: 18px; margin-bottom: 4px; }
+    .tab.active { color: #2563eb; font-weight: 600; }
+    .home-indicator { position:absolute; left:50%; transform:translateX(-50%); bottom:10px; width:128px; height:5px; border-radius:999px; background:rgba(17,24,39,.75); z-index:5; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <div class="status">
+        <span>9:41</span>
+        <div class="icons"><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-three-quarters"></i></div>
+      </div>
+      <div class="head">
+        <h2>AI 助手</h2>
+        <i class="fa-solid fa-clock-rotate-left" style="color:#64748b;"></i>
+      </div>
+      <div class="chat" id="chatList">
+        <div class="tips">基于当前药箱，建议优先关注：布洛芬（3 天后过期）、维生素 C（7 天后过期）。</div>
+        <div class="msg user"><div class="bubble">布洛芬快过期了还能吃吗？</div></div>
+        <div class="msg ai"><div class="bubble">在有效期内且外观、气味正常通常可按说明使用；若已过期则不建议继续服用，建议及时更换并妥善回收。</div></div>
+        <div class="msg user"><div class="bubble">帮我安排一下本周用药提醒。</div></div>
+        <div class="msg ai"><div class="bubble">建议设置每天晚 8 点提醒，并在过期前 3 天、1 天各推送一次预警，避免漏服和误用过期药物。</div></div>
+      </div>
+      <div class="input">
+        <i class="fa-regular fa-face-smile" style="color:#94a3b8;"></i>
+        <input id="chatInput" class="chat-input" placeholder="问问 AI：哪些药快过期了？" />
+        <button id="sendBtn" class="send"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+      <div class="tabbar">
+        <a class="tab" href="home.html"><i class="fa-solid fa-house"></i>首页</a>
+        <a class="tab" href="food-list.html"><i class="fa-solid fa-box-open"></i>药物</a>
+        <a class="tab active" href="ai-chat.html"><i class="fa-solid fa-robot"></i>AI</a>
+        <a class="tab" href="profile.html"><i class="fa-regular fa-user"></i>我的</a>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+  <script>
+    const chatList = document.getElementById("chatList");
+    const chatInput = document.getElementById("chatInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function appendMessage(role, text) {
+      const msg = document.createElement("div");
+      msg.className = "msg " + role;
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = text;
+      msg.appendChild(bubble);
+      chatList.appendChild(msg);
+      chatList.scrollTop = chatList.scrollHeight;
+    }
+
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      appendMessage("user", text);
+      chatInput.value = "";
+      setTimeout(function () {
+        appendMessage("ai", "已收到你的问题。我会结合当前药箱信息和用药常识，给你更安全的药物管理建议。");
+      }, 350);
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    chatInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>

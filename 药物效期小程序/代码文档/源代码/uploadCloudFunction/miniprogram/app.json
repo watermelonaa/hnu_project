@@ -1,0 +1,57 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/home/home",
+    "pages/drug-list/drug-list",
+    "pages/ai-chat/ai-chat",
+    "pages/profile/profile",
+    "pages/edit-drug/edit-drug",
+    "pages/manual-input/manual-input",
+    "pages/capture-input/capture-input",
+    "pages/voice-input/voice-input",
+    "pages/settings/settings",
+    "pages/message-center/message-center",
+    "pages/about/about",
+    "pages/privacy/privacy"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#4F7CFF",
+    "navigationBarTitleText": "药物效期管家",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F6F8FB"
+  },
+  "tabBar": {
+    "color": "#7B8496",
+    "selectedColor": "#4F7CFF",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "images/icons/home.png",
+        "selectedIconPath": "images/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/drug-list/drug-list",
+        "text": "药物",
+        "iconPath": "images/icons/goods.png",
+        "selectedIconPath": "images/icons/goods-active.png"
+      },
+      {
+        "pagePath": "pages/ai-chat/ai-chat",
+        "text": "AI",
+        "iconPath": "images/icons/business.png",
+        "selectedIconPath": "images/icons/business-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/icons/usercenter.png",
+        "selectedIconPath": "images/icons/usercenter-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

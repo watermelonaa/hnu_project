@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>药物效期管家 - 拍照录入</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Alibaba PuHuiTi", "PingFang SC", "Helvetica Neue", sans-serif;
+      background: #e9eff8; min-height: 100vh; display: grid; place-items: center;
+    }
+    .phone { width: 393px; height: 852px; border-radius: 52px; padding: 12px; background: linear-gradient(180deg, #22252b 0%, #13161b 100%); box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35); border: 1px solid #0f1115; }
+    .screen { width: 100%; height: 100%; border-radius: 40px; overflow: hidden; position: relative; background: #000; color: #fff; }
+    .screen::before { content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%); width:116px; height:28px; border-radius:18px; background:#0f1115; z-index:5; }
+    .status { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600; position: absolute; top: 0; left: 0; right: 0; z-index: 2; }
+    .status .icons { display: flex; align-items: center; gap: 8px; }
+    .camera {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=900&q=80') center/cover no-repeat;
+      filter: brightness(0.82);
+    }
+    .topbar {
+      position: absolute; top: 46px; left: 0; right: 0; z-index: 2;
+      display: flex; justify-content: space-between; align-items: center; padding: 0 16px;
+    }
+    .btn {
+      width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.2);
+      display: grid; place-items: center; backdrop-filter: blur(5px); cursor: pointer;
+    }
+    .box {
+      position: absolute; border: 2px solid #4ade80; border-radius: 8px; z-index: 2;
+      color: #fff; font-size: 12px; padding: 2px 6px; background: rgba(34,197,94,.25);
+    }
+    .b1 { top: 240px; left: 58px; width: 122px; height: 92px; }
+    .b2 { top: 302px; right: 56px; width: 128px; height: 98px; border-color:#60a5fa; background: rgba(59,130,246,.22);}
+    .name {
+      position: absolute; top: -26px; left: 0; border-radius: 6px;
+      background: rgba(15,23,42,.7); padding: 4px 6px;
+    }
+    .result {
+      position: absolute; left: 12px; right: 12px; bottom: 112px; z-index: 3;
+      background: rgba(15,23,42,.72); border-radius: 18px; padding: 14px;
+      backdrop-filter: blur(8px);
+    }
+    .result h3 { font-size: 15px; margin-bottom: 8px; }
+    .line { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: #dbeafe; }
+    .footer {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; padding: 14px 20px 24px;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.8));
+      text-align: center;
+    }
+    .shutter {
+      width: 72px; height: 72px; border-radius: 50%; border: 5px solid #fff; margin: 0 auto 10px;
+      box-shadow: 0 0 0 6px rgba(255,255,255,.25) inset; cursor: pointer;
+    }
+    .action { font-size: 13px; color: #d1d5db; }
+    .home-indicator { position:absolute; left:50%; transform:translateX(-50%); bottom:6px; width:128px; height:5px; border-radius:999px; background:rgba(255,255,255,.85); z-index:6; }
+
+    /* 录入弹层 */
+    .entry-overlay {
+      position: absolute; inset: 0; z-index: 20; display: none; flex-direction: column; justify-content: flex-end;
+      background: rgba(15,23,42,.45);
+    }
+    .entry-overlay.open { display: flex; }
+    .entry-sheet {
+      background: #f5f8fd; color: #1f2937; border-radius: 22px 22px 0 0;
+      max-height: 78%; overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 -12px 40px rgba(0,0,0,.2);
+    }
+    .sheet-head {
+      padding: 10px 16px 8px; text-align: center; flex-shrink: 0; border-bottom: 1px solid #e2e8f0;
+    }
+    .sheet-handle { width: 40px; height: 4px; border-radius: 999px; background: #cbd5e1; margin: 0 auto 10px; }
+    .sheet-head h3 { font-size: 16px; font-weight: 700; }
+    .sheet-head p { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .sheet-body { overflow: auto; padding: 12px 16px 20px; flex: 1; }
+    .item-block {
+      background: #fff; border-radius: 16px; padding: 12px; margin-bottom: 12px;
+      box-shadow: 0 4px 16px rgba(15,23,42,.06);
+    }
+    .item-block .tag { font-size: 12px; color: #2563eb; font-weight: 600; margin-bottom: 8px; }
+    .field { margin-bottom: 8px; }
+    .field label { display: block; font-size: 12px; color: #64748b; margin-bottom: 4px; }
+    .field input, .field select {
+      width: 100%; border: 1px solid #dbe4f3; border-radius: 10px; padding: 9px 10px; font-size: 14px;
+      font-family: inherit; outline: none;
+    }
+    .sheet-actions { display: flex; gap: 10px; padding: 12px 16px 28px; flex-shrink: 0; background: #f5f8fd; border-top: 1px solid #e2e8f0; }
+    .sheet-actions button {
+      flex: 1; border: none; border-radius: 14px; padding: 13px 0; font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .sheet-actions .cancel { background: #e2e8f0; color: #334155; }
+    .sheet-actions .save { background: linear-gradient(135deg,#2f80ed,#4facfe); color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <div class="camera"></div>
+      <div class="status">
+        <span>9:41</span>
+        <div class="icons"><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-three-quarters"></i></div>
+      </div>
+      <div class="topbar">
+        <div class="btn" onclick="window.location.href='home.html'"><i class="fa-solid fa-angle-left"></i></div>
+        <div>多模态智能识别</div>
+        <div class="btn"><i class="fa-solid fa-bolt"></i></div>
+      </div>
+      <div class="box b1"><span class="name">布洛芬 · 1盒</span></div>
+      <div class="box b2"><span class="name">维生素C · 1瓶</span></div>
+
+      <div class="result">
+        <h3>识别结果（2个目标）</h3>
+        <div class="line"><span>布洛芬</span><span>已开封 · 建议2天内复核效期</span></div>
+        <div class="line"><span>维生素C</span><span>已开封 · 建议1天内确认剩余量</span></div>
+      </div>
+      <div class="footer">
+        <div class="shutter" id="shutterBtn" role="button" tabindex="0"></div>
+        <div class="action">点击快门后弹出确认录入，可修改再保存</div>
+      </div>
+
+      <div id="entryOverlay" class="entry-overlay" aria-hidden="true">
+        <div class="entry-sheet" onclick="event.stopPropagation()">
+          <div class="sheet-head">
+            <div class="sheet-handle"></div>
+            <h3>确认录入药物</h3>
+            <p>演示：已预填识别结果，支持逐项修改后一次性保存</p>
+          </div>
+          <div class="sheet-body" id="sheetBody"></div>
+          <div class="sheet-actions">
+            <button type="button" class="cancel" id="cancelEntry">取消</button>
+            <button type="button" class="save" id="saveEntry">保存到列表</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+  <script>
+    const defaultFoods = [
+      { id: 1, name: "布洛芬", qty: "1盒", location: "药箱", openState: "已开封", status: "expired", days: -1, category: "other" }
+    ];
+    function getFoods() {
+      const raw = localStorage.getItem("foodsData");
+      if (raw) return JSON.parse(raw);
+      localStorage.setItem("foodsData", JSON.stringify(defaultFoods));
+      return defaultFoods;
+    }
+    function isoDateFromOffset(days) {
+      const d = new Date();
+      d.setHours(12, 0, 0, 0);
+      d.setDate(d.getDate() + days);
+      return d.toISOString().slice(0, 10);
+    }
+
+    const detectedItems = [
+      { name: "布洛芬", qty: "1盒", category: "other", location: "药箱", openState: "已开封", daysOffset: 2 },
+      { name: "维生素C", qty: "1瓶", category: "staple", location: "药箱", openState: "已开封", daysOffset: 1 }
+    ];
+
+    const categoryOptions = [
+      { value: "other", label: "内服药" },
+      { value: "dairy", label: "外用药" },
+      { value: "staple", label: "保健品" },
+      { value: "condiment", label: "医疗耗材" },
+      { value: "meatsea", label: "抗感染" },
+      { value: "fruit", label: "感冒退热" },
+      { value: "vegetable", label: "肠胃用药" }
+    ];
+
+    function categorySelectHtml(selected) {
+      return categoryOptions.map(o =>
+        `<option value="${o.value}"${o.value === selected ? " selected" : ""}>${o.label}</option>`
+      ).join("");
+    }
+
+    function renderEntryForm() {
+      const body = document.getElementById("sheetBody");
+      body.innerHTML = detectedItems.map((item, i) => `
+        <div class="item-block" data-index="${i}">
+          <div class="tag">识别目标 ${i + 1}</div>
+          <div class="field"><label>药物名称</label><input class="cap-name" value="${item.name}" /></div>
+          <div class="field"><label>数量</label><input class="cap-qty" value="${item.qty}" /></div>
+          <div class="field"><label>类别</label><select class="cap-cat">${categorySelectHtml(item.category)}</select></div>
+          <div class="field"><label>存放位置</label><select class="cap-loc">
+            <option${item.location === "药箱" ? " selected" : ""}>药箱</option>
+            <option${item.location === "抽屉" ? " selected" : ""}>抽屉</option>
+            <option${item.location === "随身包" ? " selected" : ""}>随身包</option>
+          </select></div>
+          <div class="field"><label>状态</label><select class="cap-state">
+            <option${item.openState === "未开封" ? " selected" : ""}>未开封</option>
+            <option${item.openState === "已开封" ? " selected" : ""}>已开封</option>
+          </select></div>
+          <div class="field"><label>到期日期</label><input class="cap-date" type="date" value="${isoDateFromOffset(item.daysOffset)}" /></div>
+        </div>
+      `).join("");
+    }
+
+    function openEntry() {
+      renderEntryForm();
+      const ov = document.getElementById("entryOverlay");
+      ov.classList.add("open");
+      ov.setAttribute("aria-hidden", "false");
+    }
+    function closeEntry() {
+      const ov = document.getElementById("entryOverlay");
+      ov.classList.remove("open");
+      ov.setAttribute("aria-hidden", "true");
+    }
+
+    function saveAllFromCapture() {
+      const blocks = document.querySelectorAll(".item-block");
+      const foods = getFoods();
+      let t = Date.now();
+      for (const block of blocks) {
+        const name = block.querySelector(".cap-name").value.trim();
+        const qty = block.querySelector(".cap-qty").value.trim();
+        if (!name || !qty) {
+          alert("请为每个目标填写名称和数量");
+          return;
+        }
+        const category = block.querySelector(".cap-cat").value;
+        const location = block.querySelector(".cap-loc").value;
+        const openState = block.querySelector(".cap-state").value;
+        const dateStr = block.querySelector(".cap-date").value;
+        const days = dateStr
+          ? Math.round((new Date(dateStr + "T12:00:00").getTime() - Date.now()) / 86400000)
+          : 7;
+        const status = days < 0 ? "expired" : days <= 3 ? "expiring" : "normal";
+        foods.push({
+          id: t++,
+          name,
+          qty,
+          location,
+          openState,
+          status,
+          days,
+          category
+        });
+      }
+      localStorage.setItem("foodsData", JSON.stringify(foods));
+      window.location.href = "food-list.html";
+    }
+
+    document.getElementById("shutterBtn").addEventListener("click", openEntry);
+    document.getElementById("cancelEntry").addEventListener("click", closeEntry);
+    document.getElementById("saveEntry").addEventListener("click", saveAllFromCapture);
+    document.getElementById("entryOverlay").addEventListener("click", function (e) {
+      if (e.target === this) closeEntry();
+    });
+  </script>
+</body>
+</html>

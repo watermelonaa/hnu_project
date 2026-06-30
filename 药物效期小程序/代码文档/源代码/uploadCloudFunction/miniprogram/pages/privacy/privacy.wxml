@@ -1,0 +1,53 @@
+<!-- pages/privacy/privacy.wxml -->
+<view class="container">
+  <view class="screen">
+    <!-- 主要内容区域 -->
+    <scroll-view class="content" scroll-y enhanced show-scrollbar="{{true}}">
+      <!-- 隐私协议卡片 -->
+      <view class="card">
+        <!-- 协议标题 -->
+        <view class="protocol-header">
+          <text class="protocol-title">{{privacyContent.title}}</text>
+          <text class="protocol-version">{{privacyContent.version}}</text>
+          <text class="protocol-date">更新日期：{{privacyContent.lastUpdated}}</text>
+        </view>
+
+        <!-- 协议说明 -->
+        <view class="protocol-notice">
+          <text>感谢您信任并使用药物效期管家。我们非常重视您的隐私保护，请您仔细阅读以下条款：</text>
+        </view>
+
+        <!-- 协议条款 -->
+        <view wx:for="{{privacyContent.sections}}" wx:key="title" class="protocol-section">
+          <view class="section-title">
+            <view class="title-icon"></view>
+            <text>{{item.title}}</text>
+          </view>
+          <text class="section-content">{{item.content}}</text>
+        </view>
+
+        <!-- 联系方式 -->
+        <view class="contact-section">
+          <view class="section-title">
+            <view class="title-icon"></view>
+            <text>联系我们</text>
+          </view>
+          <view class="contact-item" bindtap="copyEmail">
+            <text class="contact-label">隐私邮箱：</text>
+            <text class="contact-value">{{privacyContent.contactInfo.email}}</text>
+            <text class="copy-icon">复制</text>
+          </view>
+          <text class="contact-company">{{privacyContent.contactInfo.company}}</text>
+        </view>
+      </view>
+
+      <!-- 底部版权 -->
+      <view class="copyright">
+        <text>© 2024 药物效期管家</text>
+      </view>
+    </scroll-view>
+
+    <!-- 底部指示条 -->
+    <view class="home-indicator"></view>
+  </view>
+</view>

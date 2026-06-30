@@ -1,0 +1,84 @@
+<view class="container">
+  <view class="screen">
+    <view class="content">
+      <view class="card mic-wrap">
+        <view class="mic {{micClass}}" bindtap="toggleRecording">
+          <text>语音</text>
+        </view>
+        <text class="mic-hint">{{micHint}}</text>
+        <text class="mic-desc">{{micDesc}}</text>
+      </view>
+
+      <view class="card">
+        <text class="section-title">识别文本</text>
+        <textarea class="speech-input" value="{{recognizedText}}" bindinput="onRecognizedTextInput" placeholder="例如：布洛芬一盒，两天后过期。" />
+        <button class="parse-btn" bindtap="parseTypedText" loading="{{isRecognizing}}" disabled="{{isRecognizing}}">解析文字</button>
+      </view>
+
+      <view class="card">
+        <view class="section-head">
+          <text class="section-title">药品信息</text>
+          <text class="confidence {{confidenceClass}}">{{confidenceText}}</text>
+        </view>
+
+        <view wx:if="{{warnings.length}}" class="warning-box">
+          <text wx:for="{{warnings}}" wx:for-item="warning" wx:key="*this">! {{warning}}</text>
+        </view>
+
+        <view class="form-field">
+          <text class="field-label">药品名称</text>
+          <input class="field-input" value="{{drug.name}}" bindinput="onNameInput" placeholder="请输入药品名称" />
+        </view>
+
+        <view class="form-field">
+          <text class="field-label">数量</text>
+          <input class="field-input" value="{{drug.qty}}" bindinput="onQtyInput" placeholder="例如：1盒" />
+        </view>
+
+        <view class="form-field">
+          <text class="field-label">分类</text>
+          <picker mode="selector" range="{{categoryOptions}}" range-key="name" value="{{categoryIndex}}" bindchange="onCategoryChange">
+            <view class="picker-view">
+              <text>{{drug.categoryText}}</text>
+              <text class="picker-arrow">⌄</text>
+            </view>
+          </picker>
+        </view>
+
+        <view class="form-field">
+          <text class="field-label">位置</text>
+          <picker mode="selector" range="{{locationOptions}}" value="{{locationIndex}}" bindchange="onLocationChange">
+            <view class="picker-view">
+              <text>{{drug.locationText}}</text>
+              <text class="picker-arrow">⌄</text>
+            </view>
+          </picker>
+        </view>
+
+        <view class="form-field">
+          <text class="field-label">开封状态</text>
+          <picker mode="selector" range="{{openStateOptions}}" value="{{openStateIndex}}" bindchange="onOpenStateChange">
+            <view class="picker-view">
+              <text>{{drug.openStateText}}</text>
+              <text class="picker-arrow">⌄</text>
+            </view>
+          </picker>
+        </view>
+
+        <view class="form-field">
+          <text class="field-label">到期日期</text>
+          <picker mode="date" value="{{drug.date}}" bindchange="onDateChange">
+            <view class="picker-view">
+              <text>{{dateText}}</text>
+              <text class="picker-arrow">⌄</text>
+            </view>
+          </picker>
+        </view>
+
+        <view wx:if="{{drug.note}}" class="note">{{drug.note}}</view>
+        <button class="save-btn" loading="{{isSaving}}" disabled="{{isSaving}}" bindtap="saveDrug">保存</button>
+        <button class="list-btn" bindtap="goToList">查看列表</button>
+      </view>
+    </view>
+  </view>
+</view>

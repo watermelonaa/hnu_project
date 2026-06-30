@@ -1,0 +1,31 @@
+/** app.wxss **/
+page {
+  width: 100%;
+  min-height: 100%;
+  background: #f6f8fb;
+  color: #1d2433;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+view,
+text,
+input,
+textarea,
+button,
+scroll-view,
+image {
+  box-sizing: border-box;
+}
+
+button {
+  line-height: 1.2;
+}
+
+.safe-card {
+  background: #ffffff;
+  border: 1rpx solid rgba(33, 41, 61, 0.06);
+  border-radius: 28rpx;
+  box-shadow: 0 14rpx 38rpx rgba(35, 48, 78, 0.08);
+}

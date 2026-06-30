@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>药物效期管家 - 药物列表</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Alibaba PuHuiTi", "PingFang SC", "Helvetica Neue", sans-serif;
+      background: linear-gradient(180deg, #eef3ff, #f7f9fc);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      color: #1f2937;
+    }
+    .phone { width: 393px; height: 852px; border-radius: 52px; padding: 12px; background: linear-gradient(180deg, #22252b 0%, #13161b 100%); box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35); border: 1px solid #0f1115; }
+    .screen { width: 100%; height: 100%; border-radius: 40px; background: #f5f8fd; overflow: hidden; position: relative; }
+    .screen::before { content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%); width:116px; height:28px; border-radius:18px; background:#0f1115; z-index:3; }
+    .status { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600; }
+    .status i { margin-left: 8px; }
+    .head { padding: 8px 16px 10px; display: flex; justify-content: space-between; align-items: center; }
+    .head h2 { font-size: 24px; }
+    .sort-btn { color: #64748b; cursor: pointer; }
+    .sort-panel {
+      margin: 0 16px 10px;
+      background: #fff;
+      border: 1px solid #e8edf6;
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: none;
+      gap: 8px;
+    }
+    .sort-panel.open { display: flex; }
+    .sort-option {
+      border: 1px solid #dbe4f3;
+      background: #f8fbff;
+      color: #3b82f6;
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .search {
+      margin: 0 16px 10px;
+      background: #fff;
+      border: 1px solid #e8edf6;
+      border-radius: 14px;
+      padding: 11px 12px;
+      display: flex;
+      gap: 10px;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+    .search input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      color: #1f2937;
+      background: transparent;
+      font-family: inherit;
+    }
+    .chips {
+      margin: 0 16px 10px;
+      display: flex;
+      gap: 8px;
+      overflow: auto;
+      white-space: nowrap;
+      padding-bottom: 2px;
+    }
+    .chip {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e8eefc;
+      color: #3b82f6;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .chip.active { background: #3b82f6; color: #fff; }
+    .list { height: 610px; overflow: auto; padding: 0 16px 132px; }
+    .item {
+      background: #fff;
+      border-radius: 20px;
+      padding: 14px 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s;
+    }
+    .item:active {
+      transform: scale(0.98);
+    }
+    .item.focus {
+      border: 2px solid #60a5fa;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.12);
+    }
+    /* 图标容器 - 统一尺寸，居中对齐 */
+    .drug-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .drug-icon i {
+      font-size: 26px;
+    }
+    /* 按剂型区分背景色和图标 */
+    .icon-bottle { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #0284c7; }
+    .icon-blister { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #db2777; }
+    .icon-pouch { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #059669; }
+    .icon-tube { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #d97706; }
+    .meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .meta h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #1e293b;
+      line-height: 1.3;
+    }
+    .meta-detail {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .meta-detail span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .meta-detail i {
+      font-size: 10px;
+      color: #cbd5e1;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .days-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: #475569;
+    }
+    .row-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .status-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: #fff;
+    }
+    .status-expired { background: #ef4444; }
+    .status-expiring { background: #f59e0b; }
+    .status-normal { background: #10b981; }
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+    .action-btn:hover {
+      background: #f1f5f9;
+    }
+    .edit-btn { color: #3b82f6; }
+    .delete-btn { color: #ef4444; }
+    .tabbar {
+      position: absolute; left: 12px; right: 12px; bottom: 34px;
+      background: rgba(255,255,255,.96); border-radius: 24px;
+      display: grid; grid-template-columns: repeat(4,1fr); padding: 10px 0 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(10px);
+    }
+    .tab { text-align: center; font-size: 11px; color: #64748b; text-decoration: none; transition: color 0.2s; }
+    .tab i { display: block; font-size: 20px; margin-bottom: 4px; }
+    .tab.active { color: #3b82f6; font-weight: 600; }
+    .home-indicator { position:absolute; left:50%; transform:translateX(-50%); bottom:10px; width:128px; height:5px; border-radius:999px; background:rgba(17,24,39,.75); z-index:5; }
+    .empty {
+      display: none;
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      color: #64748b;
+      margin-top: 20px;
+    }
+    .empty i { font-size: 48px; color: #cbd5e1; margin-bottom: 12px; }
+    .empty h4 { color: #1f2937; font-size: 16px; margin-bottom: 6px; }
+    .empty p { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <div class="status">
+        <span>9:41</span>
+        <div><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-full"></i></div>
+      </div>
+      <div class="head">
+        <h2>药物列表</h2>
+        <i id="sortToggle" class="fa-solid fa-arrow-down-a-z sort-btn" title="排序"></i>
+      </div>
+      <div id="sortPanel" class="sort-panel">
+        <button class="sort-option" data-sort="name">按药物名称排序</button>
+        <button class="sort-option" data-sort="createdAt">按录入日期排序</button>
+      </div>
+      <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInput" placeholder="搜索药名、状态" /></div>
+      
+      <div class="chips">
+        <button class="chip active" data-filter="all">全部</button>
+        <button class="chip" data-filter="expired">已过期</button>
+        <button class="chip" data-filter="expiring">3天内过期</button>
+        <button class="chip" data-filter="sealed">未开封</button>
+        <button class="chip" data-filter="opened">已开封</button>
+      </div>
+      
+      <div class="list" id="drugList">
+        <div class="empty" id="emptyState">
+          <i class="fa-regular fa-face-smile"></i>
+          <h4>当前筛选暂无药物</h4>
+          <p>你可以切换筛选条件，或回到首页快速录入药物。</p>
+        </div>
+      </div>
+      <div class="tabbar">
+        <a class="tab" href="home.html"><i class="fa-solid fa-house"></i>首页</a>
+        <a class="tab active" href="food-list.html"><i class="fa-solid fa-box-open"></i>药物</a>
+        <a class="tab" href="ai-chat.html"><i class="fa-solid fa-robot"></i>AI</a>
+        <a class="tab" href="profile.html"><i class="fa-regular fa-user"></i>我的</a>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+  <script>
+    // 药物默认数据
+    const defaultDrugs = [
+      { id: 1, name: "布洛芬", qty: "1盒", openState: "已开封", dosageForm: "bottle", status: "expired", days: -1, category: "antipyretic" },
+      { id: 2, name: "维生素C片", qty: "1瓶", openState: "已开封", dosageForm: "bottle", status: "expiring", days: 2, category: "vitamin" },
+      { id: 3, name: "感冒灵颗粒", qty: "6袋", openState: "独立包装", dosageForm: "pouch", status: "normal", days: 8, category: "antipyretic" },
+      { id: 4, name: "阿莫西林胶囊", qty: "1盒", openState: "独立包装", dosageForm: "blister", status: "expiring", days: 1, category: "antibiotic" },
+      { id: 5, name: "蒙脱石散", qty: "2盒", openState: "独立包装", dosageForm: "pouch", status: "normal", days: 9, category: "digestive" },
+      { id: 6, name: "碘伏消毒液", qty: "1瓶", openState: "已开封", dosageForm: "bottle", status: "expired", days: -2, category: "external" },
+      { id: 7, name: "创可贴", qty: "1盒", openState: "独立包装", dosageForm: "blister", status: "expiring", days: 1, category: "external" },
+      { id: 8, name: "叶酸片", qty: "1瓶", openState: "未开封", dosageForm: "bottle", status: "normal", days: 42, category: "vitamin" },
+      { id: 9, name: "氯雷他定片", qty: "1盒", openState: "独立包装", dosageForm: "blister", status: "normal", days: 10, category: "other" },
+      { id: 10, name: "对乙酰氨基酚", qty: "1盒", openState: "独立包装", dosageForm: "blister", status: "normal", days: 7, category: "antipyretic" },
+      { id: 11, name: "复合维生素", qty: "1瓶", openState: "已开封", dosageForm: "bottle", status: "normal", days: 15, category: "vitamin" },
+      { id: 12, name: "西瓜霜含片", qty: "1盒", openState: "独立包装", dosageForm: "blister", status: "expiring", days: 2, category: "other" },
+      { id: 13, name: "藿香正气水", qty: "1盒", openState: "独立包装", dosageForm: "pouch", status: "expiring", days: 3, category: "digestive" },
+      { id: 14, name: "止咳糖浆", qty: "1瓶", openState: "已开封", dosageForm: "bottle", status: "expired", days: -3, category: "other" },
+      { id: 15, name: "红霉素软膏", qty: "1支", openState: "已开封", dosageForm: "tube", status: "expired", days: -4, category: "external" }
+    ];
+
+    const chips = Array.from(document.querySelectorAll(".chip"));
+    const listEl = document.getElementById("drugList");
+    const emptyState = document.getElementById("emptyState");
+    const params = new URLSearchParams(window.location.search);
+    const searchInput = document.getElementById("searchInput");
+    const sortToggle = document.getElementById("sortToggle");
+    const sortPanel = document.getElementById("sortPanel");
+    const sortOptions = Array.from(document.querySelectorAll(".sort-option"));
+    const initialFilter = params.get("filter") || "all";
+    const focusId = params.get("focus");
+    let currentFilter = initialFilter;
+    let currentSort = params.get("sort") || "createdAt";
+    let drugs = [];
+
+    // 根据剂型获取图标样式和图标
+    function getDosageIcon(dosageForm) {
+      const map = {
+        bottle: { class: "icon-bottle", icon: "fa-prescription-bottle" },
+        blister: { class: "icon-blister", icon: "fa-tablets" },
+        pouch: { class: "icon-pouch", icon: "fa-envelope" },
+        tube: { class: "icon-tube", icon: "fa-syringe" }
+      };
+      return map[dosageForm] || map.bottle;
+    }
+
+    // 根据剂型获取显示文字
+    function getDosageText(dosageForm) {
+      const map = {
+        bottle: "瓶装",
+        blister: "板装",
+        pouch: "冲剂",
+        tube: "软膏"
+      };
+      return map[dosageForm] || "其他";
+    }
+
+    function getDrugs() {
+      const raw = localStorage.getItem("foodsData");
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data.length > 0 && (data[0].name === "酱油" || data[0].name === "纯牛奶" || data[0].name === "蓝莓")) {
+          localStorage.setItem("foodsData", JSON.stringify(defaultDrugs));
+          return defaultDrugs;
+        }
+        const needsUpdate = data.some(d => !d.dosageForm);
+        if (needsUpdate) {
+          data.forEach(d => {
+            if (!d.dosageForm) {
+              d.dosageForm = (d.openState === "独立包装") ? "blister" : "bottle";
+            }
+          });
+          localStorage.setItem("foodsData", JSON.stringify(data));
+        }
+        return data;
+      }
+      localStorage.setItem("foodsData", JSON.stringify(defaultDrugs));
+      return defaultDrugs;
+    }
+
+    function saveDrugs(data) {
+      localStorage.setItem("foodsData", JSON.stringify(data));
+    }
+
+    function getStatusLabel(status) {
+      return status === "expired" ? "已过期" : status === "expiring" ? "临期" : "正常";
+    }
+
+    function getStatusClass(status) {
+      return status === "expired" ? "status-expired" : status === "expiring" ? "status-expiring" : "status-normal";
+    }
+
+    function getTimeText(item) {
+      if (item.days < 0) return "已过期 " + Math.abs(item.days) + "天";
+      return "剩余 " + item.days + "天";
+    }
+
+    function getTags(item) {
+      const tags = [item.status];
+      if (item.openState === "未开封") tags.push("sealed");
+      else if (item.openState === "已开封") tags.push("opened");
+      return tags.join(" ");
+    }
+
+    function renderList() {
+      listEl.querySelectorAll(".item").forEach(el => el.remove());
+      const sortedDrugs = drugs.slice().sort(function (a, b) {
+        if (currentSort === "name") return a.name.localeCompare(b.name, "zh-CN");
+        return (b.createdAt || b.id || 0) - (a.createdAt || a.id || 0);
+      });
+      sortedDrugs.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "item";
+        if (String(item.id) === String(focusId)) card.classList.add("focus");
+        card.dataset.tags = getTags(item);
+        
+        const dosageForm = item.dosageForm || "bottle";
+        const dosageIcon = getDosageIcon(dosageForm);
+        const dosageText = getDosageText(dosageForm);
+        const stateDisplay = item.openState || "独立包装";
+        
+        card.innerHTML = `
+          <div class="drug-icon ${dosageIcon.class}">
+            <i class="fa-solid ${dosageIcon.icon}"></i>
+          </div>
+          <div class="meta">
+            <h4>${item.name}</h4>
+            <div class="meta-detail">
+              <span><i class="fa-regular fa-circle-dot"></i>${dosageText}</span>
+              <span><i class="fa-regular fa-box"></i>${stateDisplay}</span>
+              <span><i class="fa-regular fa-hashtag"></i>${item.qty}</span>
+            </div>
+            <div class="row">
+              <span class="days-text"><i class="fa-regular fa-calendar"></i> ${getTimeText(item)}</span>
+              <div class="row-right">
+                <span class="status-tag ${getStatusClass(item.status)}">${getStatusLabel(item.status)}</span>
+                <button class="action-btn edit-btn" data-id="${item.id}" title="编辑"><i class="fa-solid fa-pen"></i></button>
+                <button class="action-btn delete-btn" data-delete-id="${item.id}" title="删除"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        `;
+        listEl.insertBefore(card, emptyState);
+      });
+      if (focusId) {
+        const target = listEl.querySelector('.item.focus');
+        if (target) target.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    }
+
+    function setActive(filter) {
+      chips.forEach((chip) => {
+        chip.classList.toggle("active", chip.dataset.filter === filter);
+      });
+    }
+
+    function applyFilter(filter) {
+      currentFilter = filter;
+      setActive(filter);
+      let visibleCount = 0;
+      const keyword = (searchInput.value || "").trim().toLowerCase();
+      const items = Array.from(document.querySelectorAll(".item"));
+      items.forEach((item) => {
+        const tags = item.dataset.tags || "";
+        const text = item.textContent.toLowerCase();
+        const matchFilter = filter === "all" || tags.includes(filter);
+        const matchKeyword = !keyword || text.includes(keyword);
+        const show = matchFilter && matchKeyword;
+        item.style.display = show ? "flex" : "none";
+        if (show) visibleCount += 1;
+      });
+      emptyState.style.display = visibleCount === 0 ? "block" : "none";
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const filter = chip.dataset.filter;
+        applyFilter(filter);
+        const nextUrl = filter === "all" ? "food-list.html" : "food-list.html?filter=" + filter;
+        const join = nextUrl.includes("?") ? "&" : "?";
+        history.replaceState({}, "", nextUrl + join + "sort=" + encodeURIComponent(currentSort));
+      });
+    });
+
+    searchInput.addEventListener("input", function () {
+      applyFilter(currentFilter);
+    });
+
+    listEl.addEventListener("click", function (e) {
+      const btn = e.target.closest(".edit-btn");
+      const deleteBtn = e.target.closest(".delete-btn");
+      if (deleteBtn) {
+        const deleteId = deleteBtn.dataset.deleteId;
+        drugs = drugs.filter(function (f) { return String(f.id) !== String(deleteId); });
+        saveDrugs(drugs);
+        renderList();
+        applyFilter(currentFilter);
+        return;
+      }
+      if (!btn) return;
+      const id = btn.dataset.id;
+      window.location.href = "edit-food.html?id=" + encodeURIComponent(id);
+    });
+
+    sortToggle.addEventListener("click", function () {
+      sortPanel.classList.toggle("open");
+    });
+
+    sortOptions.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        currentSort = btn.dataset.sort;
+        renderList();
+        applyFilter(currentFilter);
+        const nextUrl = "food-list.html?filter=" + encodeURIComponent(currentFilter) + "&sort=" + encodeURIComponent(currentSort);
+        history.replaceState({}, "", nextUrl);
+      });
+    });
+
+    drugs = getDrugs();
+    drugs = drugs.map(function (f) {
+      if (!f.createdAt) f.createdAt = f.id || Date.now();
+      if (!f.category) f.category = "other";
+      if (!f.dosageForm) f.dosageForm = (f.openState === "独立包装") ? "blister" : "bottle";
+      return f;
+    });
+    saveDrugs(drugs);
+    renderList();
+    applyFilter(initialFilter);
+  </script>
+</body>
+</html>

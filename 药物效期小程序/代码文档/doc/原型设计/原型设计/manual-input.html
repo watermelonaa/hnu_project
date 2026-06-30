@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>药物效期管家 - 手动录入</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Alibaba PuHuiTi", "PingFang SC", "Helvetica Neue", sans-serif; background: #edf2fb; min-height: 100vh; display: grid; place-items: center; color: #1f2937; }
+    .phone { width: 393px; height: 852px; border-radius: 52px; padding: 12px; background: linear-gradient(180deg, #22252b 0%, #13161b 100%); box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35); border: 1px solid #0f1115; }
+    .screen { width: 100%; height: 100%; border-radius: 40px; background: #f5f8fd; overflow: hidden; position: relative; }
+    .screen::before { content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%); width:116px; height:28px; border-radius:18px; background:#0f1115; z-index:3; }
+    .status { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600; }
+    .status .icons { display: flex; align-items: center; gap: 8px; }
+    .head { padding: 8px 16px; display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
+    .content { padding: 8px 16px; }
+    .card { background: #fff; border-radius: 16px; padding: 14px; box-shadow: 0 8px 20px rgba(15,23,42,.05); }
+    .field { margin-bottom: 10px; }
+    .field label { display: block; font-size: 13px; color: #64748b; margin-bottom: 6px; }
+    .field input, .field select {
+      width: 100%; border: 1px solid #dbe4f3; border-radius: 10px; padding: 10px 11px; font-size: 14px;
+      font-family: inherit; outline: none;
+    }
+    .field input:disabled, .field select:disabled {
+      background: #f1f5f9;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+    .status-preview {
+      background: #eef2ff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #2563eb;
+      margin-top: 4px;
+    }
+    .hint { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+    .btn { margin-top: 12px; width: 100%; border: none; border-radius: 14px; padding: 13px 0; background: #2563eb; color: #fff; font-weight: 600; cursor: pointer; }
+    .home-indicator { position:absolute; left:50%; transform:translateX(-50%); bottom:6px; width:128px; height:5px; border-radius:999px; background:rgba(17,24,39,.75); z-index:5; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <div class="status">
+        <span>9:41</span>
+        <div class="icons"><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-full"></i></div>
+      </div>
+      <div class="head"><i class="fa-solid fa-angle-left" onclick="window.location.href='home.html'" style="cursor:pointer;"></i><span>手动录入</span></div>
+      <div class="content">
+        <div class="card">
+          <div class="field"><label>药物名称</label><input id="name" placeholder="例如：布洛芬" /></div>
+          <div class="field"><label>数量</label><input id="qty" placeholder="例如：1盒 / 1瓶 / 24片" /></div>
+          <div class="field"><label>剂型</label><select id="dosageForm">
+            <option value="bottle">瓶装（药片/胶囊/糖浆）</option>
+            <option value="blister">铝箔板装（独立包装）</option>
+            <option value="pouch">颗粒冲剂（独立小包）</option>
+            <option value="tube">软膏/外用</option>
+          </select></div>
+          <div class="field"><label>类别</label><select id="category">
+            <option value="antipyretic">感冒退热</option>
+            <option value="antibiotic">抗感染</option>
+            <option value="digestive">肠胃用药</option>
+            <option value="vitamin">维生素/保健品</option>
+            <option value="external">外用药</option>
+            <option value="other">其他内服药</option>
+          </select></div>
+          <div class="field" id="openStateField" style="display: none;">
+            <label>开封状态</label>
+            <select id="openState">
+              <option>未开封</option>
+              <option>已开封</option>
+            </select>
+            <div class="hint">仅瓶装/软膏需记录开封状态，独立包装药物不受影响</div>
+          </div>
+          <div class="field"><label>到期日期</label><input id="date" type="date" onchange="updateStatusPreview()" /></div>
+          <div class="field">
+            <label>状态</label>
+            <div id="statusPreview" class="status-preview">请选择到期日期</div>
+          </div>
+          <button class="btn" onclick="saveDrug()">保存并加入列表</button>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+  <script>
+    const defaultDrugs = [
+      { id: 1, name: "布洛芬", qty: "1盒", openState: "已开封", status: "expired", days: -1, category: "antipyretic", dosageForm: "bottle" }
+    ];
+
+    function getDrugs() {
+      const raw = localStorage.getItem("foodsData");
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data.length > 0 && (data[0].name === "酱油" || data[0].name === "纯牛奶")) {
+          localStorage.setItem("foodsData", JSON.stringify(defaultDrugs));
+          return defaultDrugs;
+        }
+        return data;
+      }
+      localStorage.setItem("foodsData", JSON.stringify(defaultDrugs));
+      return defaultDrugs;
+    }
+
+    // 根据剂型显示/隐藏开封状态字段
+    const dosageSelect = document.getElementById("dosageForm");
+    const openStateField = document.getElementById("openStateField");
+
+    function toggleOpenStateField() {
+      const dosage = dosageSelect.value;
+      const needsOpenState = dosage === "bottle" || dosage === "tube";
+      openStateField.style.display = needsOpenState ? "block" : "none";
+    }
+
+    dosageSelect.addEventListener("change", toggleOpenStateField);
+    toggleOpenStateField();
+
+    // 根据到期日期计算状态并显示预览
+    function updateStatusPreview() {
+      const dateInput = document.getElementById("date").value;
+      const previewDiv = document.getElementById("statusPreview");
+      
+      if (!dateInput) {
+        previewDiv.innerHTML = "请选择到期日期";
+        previewDiv.style.background = "#eef2ff";
+        previewDiv.style.color = "#2563eb";
+        return;
+      }
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const expireDate = new Date(dateInput);
+      expireDate.setHours(0, 0, 0, 0);
+      const daysRemaining = Math.floor((expireDate - today) / 86400000);
+      
+      let statusText = "";
+      let bgColor = "";
+      let textColor = "";
+      
+      if (daysRemaining < 0) {
+        statusText = "🔴 已过期（已过期 " + Math.abs(daysRemaining) + " 天）";
+        bgColor = "#fef2f2";
+        textColor = "#dc2626";
+      } else if (daysRemaining <= 3) {
+        statusText = "🟡 临期（剩余 " + daysRemaining + " 天，建议尽快使用）";
+        bgColor = "#fffbeb";
+        textColor = "#d97706";
+      } else {
+        statusText = "🟢 正常（剩余 " + daysRemaining + " 天）";
+        bgColor = "#f0fdf4";
+        textColor = "#16a34a";
+      }
+      
+      previewDiv.innerHTML = statusText;
+      previewDiv.style.background = bgColor;
+      previewDiv.style.color = textColor;
+    }
+
+    document.getElementById("date").addEventListener("change", updateStatusPreview);
+
+    function saveDrug() {
+      const name = document.getElementById("name").value.trim();
+      if (!name) return alert("请先填写药物名称");
+      const qty = document.getElementById("qty").value.trim();
+      if (!qty) return alert("请填写数量");
+      const dosageForm = document.getElementById("dosageForm").value;
+      const category = document.getElementById("category").value;
+      const date = document.getElementById("date").value;
+      
+      if (!date) return alert("请选择到期日期");
+      
+      // 开封状态：仅当剂型需要时才读取，否则设为"独立包装"
+      let openState = "独立包装";
+      if (dosageForm === "bottle" || dosageForm === "tube") {
+        openState = document.getElementById("openState").value;
+      }
+      
+      // 自动计算状态
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const expireDate = new Date(date);
+      expireDate.setHours(0, 0, 0, 0);
+      const days = Math.floor((expireDate - today) / 86400000);
+      const status = days < 0 ? "expired" : days <= 3 ? "expiring" : "normal";
+      
+      const drugs = getDrugs();
+      drugs.push({
+        id: Date.now(),
+        name: name,
+        qty: qty,
+        openState: openState,
+        dosageForm: dosageForm,
+        status: status,
+        days: days,
+        category: category
+      });
+      localStorage.setItem("foodsData", JSON.stringify(drugs));
+      window.location.href = "food-list.html";
+    }
+  </script>
+</body>
+</html>

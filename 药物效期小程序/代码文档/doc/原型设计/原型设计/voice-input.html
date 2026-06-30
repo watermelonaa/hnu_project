@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>药物效期管家 - 语音解析</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Alibaba PuHuiTi", "PingFang SC", "Helvetica Neue", sans-serif; background: #edf2fb; min-height: 100vh; display: grid; place-items: center; color: #1f2937; }
+    .phone { width: 393px; height: 852px; border-radius: 52px; padding: 12px; background: linear-gradient(180deg, #22252b 0%, #13161b 100%); box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35); border: 1px solid #0f1115; }
+    .screen { width: 100%; height: 100%; border-radius: 40px; background: #f5f8fd; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+    .screen::before { content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%); width:116px; height:28px; border-radius:18px; background:#0f1115; z-index:3; }
+    .status { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600; }
+    .status .icons { display: flex; align-items: center; gap: 8px; }
+    .head { padding: 8px 16px; display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; }
+    .content { padding: 8px 16px 28px; flex: 1; min-height: 0; overflow: auto; }
+    .card { background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 8px 20px rgba(15,23,42,.06); margin-bottom: 12px; }
+    .speech {
+      background: #eef4ff; border-radius: 14px; padding: 12px; color: #334155; font-size: 14px; line-height: 1.5;
+      border: 1px solid #dbe7ff;
+    }
+    .mic-wrap { text-align: center; padding: 12px 0 4px; }
+    .mic {
+      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 10px;
+      background: radial-gradient(circle, #60a5fa, #2563eb);
+      display: grid; place-items: center; color: #fff; font-size: 30px;
+      box-shadow: 0 0 0 10px rgba(37,99,235,.13), 0 0 0 20px rgba(37,99,235,.08);
+    }
+    .field { margin-bottom: 10px; }
+    .field label { display: block; font-size: 13px; color: #64748b; margin-bottom: 6px; }
+    .field input, .field select {
+      width: 100%; border: 1px solid #dbe4f3; border-radius: 10px; padding: 10px 11px; font-size: 14px;
+      font-family: inherit; outline: none;
+    }
+    .section-title { font-weight: 700; margin-bottom: 10px; font-size: 15px; }
+    .btn {
+      width: 100%; border: none; border-radius: 14px; padding: 14px 0;
+      font-size: 16px; font-weight: 600; color: #fff;
+      background: linear-gradient(135deg,#2f80ed,#4facfe);
+      cursor: pointer;
+    }
+    .btn-secondary {
+      margin-top: 10px; background: #e2e8f0; color: #334155;
+    }
+    .home-indicator { position:absolute; left:50%; transform:translateX(-50%); bottom:6px; width:128px; height:5px; border-radius:999px; background:rgba(17,24,39,.75); z-index:5; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <div class="status">
+        <span>9:41</span>
+        <div class="icons"><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-full"></i></div>
+      </div>
+      <div class="head"><i class="fa-solid fa-angle-left" onclick="window.location.href='home.html'" style="cursor:pointer;"></i><span>语音解析录入</span></div>
+      <div class="content">
+        <div class="card">
+          <div class="mic-wrap">
+            <div class="mic"><i class="fa-solid fa-microphone"></i></div>
+            <p style="font-size:13px;color:#64748b;">演示：以下为模拟转写与解析结果，可直接修改后保存</p>
+          </div>
+          <div class="speech" style="margin-top:14px;">
+            “药箱里还有一盒布洛芬，还有一瓶已经开封的维生素C。”
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">编辑</div>
+          <div class="field"><label>药物名称</label><input id="name" placeholder="品名" /></div>
+          <div class="field"><label>数量</label><input id="qty" placeholder="例如：0.5 盒" /></div>
+          <div class="field"><label>类别</label><select id="category"><option value="other" selected>内服药</option><option value="dairy">外用药</option><option value="staple">保健品</option><option value="condiment">医疗耗材</option><option value="meatsea">抗感染</option><option value="fruit">感冒退热</option><option value="vegetable">肠胃用药</option></select></div>
+          <div class="field"><label>存放位置</label><select id="location"><option selected>药箱</option><option>抽屉</option><option>随身包</option></select></div>
+          <div class="field"><label>状态</label><select id="state"><option>未开封</option><option selected>已开封</option></select></div>
+          <div class="field"><label>到期日期</label><input id="date" type="date" /></div>
+          <button type="button" class="btn" onclick="saveFromVoice()">保存并加入列表</button>
+          <button type="button" class="btn btn-secondary" onclick="window.location.href='food-list.html'">仅查看列表</button>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+  <script>
+    const defaultFoods = [
+      { id: 1, name: "布洛芬", qty: "1盒", location: "药箱", openState: "已开封", status: "expired", days: -1, category: "other" }
+    ];
+    function getFoods() {
+      const raw = localStorage.getItem("foodsData");
+      if (raw) return JSON.parse(raw);
+      localStorage.setItem("foodsData", JSON.stringify(defaultFoods));
+      return defaultFoods;
+    }
+    function isoDateFromOffset(days) {
+      const d = new Date();
+      d.setHours(12, 0, 0, 0);
+      d.setDate(d.getDate() + days);
+      return d.toISOString().slice(0, 10);
+    }
+    document.getElementById("name").value = "布洛芬";
+    document.getElementById("qty").value = "1 盒";
+    document.getElementById("date").value = isoDateFromOffset(2);
+
+    function saveFromVoice() {
+      const name = document.getElementById("name").value.trim();
+      if (!name) return alert("请填写药物名称");
+      const qty = document.getElementById("qty").value.trim();
+      if (!qty) return alert("请填写数量");
+      const category = document.getElementById("category").value;
+      const location = document.getElementById("location").value;
+      const openState = document.getElementById("state").value;
+      const date = document.getElementById("date").value;
+      const days = date ? Math.round((new Date(date + "T12:00:00").getTime() - Date.now()) / 86400000) : 7;
+      const status = days < 0 ? "expired" : days <= 3 ? "expiring" : "normal";
+      const foods = getFoods();
+      foods.push({
+        id: Date.now(),
+        name,
+        qty,
+        location,
+        openState,
+        status,
+        days,
+        category
+      });
+      localStorage.setItem("foodsData", JSON.stringify(foods));
+      window.location.href = "food-list.html";
+    }
+  </script>
+</body>
+</html>
